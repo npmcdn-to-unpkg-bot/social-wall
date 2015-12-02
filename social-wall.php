@@ -1,4 +1,10 @@
 <?php
+/*
+	social-wall V1.0
+	Made by Jordan Thiervoz
+	OKLM posey
+*/
+
 // Infos des applications
 $FB_app_id = "";
 $FB_app_secret = "";

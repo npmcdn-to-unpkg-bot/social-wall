@@ -1,3 +1,9 @@
+/*
+	social-wall V1.0
+	Made by Jordan Thiervoz
+	OKLM posey
+*/
+
 /* START VARIABLE INITIALIZATION */
 // Social wall width
 var tailleContainer;
