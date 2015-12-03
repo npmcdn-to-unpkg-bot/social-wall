@@ -1,5 +1,5 @@
 /*
-	social-wall V1.0
+	social-wall V1.1
 	Made by Jordan Thiervoz
 	OKLM posey
 */
@@ -317,7 +317,8 @@ var social = {
 	createArticle:function(data, network){
 		// Variables des éléments créés dans la page
 		var article;
-		var divSource, sourceP, sourceImg;
+		var divSource, sourceP;
+		var sourceImg, gElement, pathElement, pathElement2;
 		var aLink;
 		var divContent, imgContent;
 		var divDate;
@@ -329,40 +330,81 @@ var social = {
 		article.attr("data-date", data[3]);
 
 		divSource = $("<div></div>");
-		divSource.addClass("social_source");
+		divSource = document.createElement("div");
+		divSource.className = "social_source";
 
-		sourceImg = $("<img/>");
+		sourceImg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+
+		sourceImg.width = 30;
+		sourceImg.height = 30;
+
+		gElement = document.createElementNS("http://www.w3.org/2000/svg", "g");
+		pathElement = document.createElementNS("http://www.w3.org/2000/svg", "path");
+		pathElement2 = document.createElementNS("http://www.w3.org/2000/svg", "path");
+
 		switch(network){
 			case "Facebook" :
-				sourceImg.attr("src", "wp-content/themes/Theme/js/social-wall/img/fb.png");
-				article.addClass("social_network_" + network);
+				gElement.setAttribute("id", "Facebook_6_");
+
+				pathElement.setAttribute("fill", "#43619C");
+				pathElement.setAttribute("d", "M15,30C6.729,30,0,23.271,0,15S6.729,0,15,0s15,6.729,15,15S23.271,30,15,30z M15,1.14 C7.357,1.14,1.14,7.357,1.14,15S7.357,28.86,15,28.86S28.86,22.643,28.86,15S22.643,1.14,15,1.14z");
+				
+				pathElement2.setAttribute("id", "Facebook_1_");
+				pathElement2.setAttribute("fill", "#43619C");
+				pathElement2.setAttribute("d", "M21.866,20.939c0,0.425-0.345,0.77-0.77,0.77h-3.555v-5.403h1.814l0.271-2.105h-2.085 v-1.344c0-0.61,0.17-1.025,1.044-1.025l1.115-0.001V9.947c-0.193-0.025-0.854-0.083-1.625-0.083c-1.608,0-2.708,0.981-2.708,2.783 V14.2h-1.818v2.105h1.818v5.403H8.683c-0.425,0-0.77-0.345-0.77-0.77V8.526c0-0.425,0.345-0.77,0.77-0.77h12.413 c0.425,0,0.77,0.344,0.77,0.77C21.866,8.526,21.866,20.939,21.866,20.939z");
 				break;
 			case "Twitter" :
-				sourceImg.attr("src", "wp-content/themes/Theme/js/social-wall/img/tw.png");
-				article.addClass("social_network_" + network);
+				gElement.setAttribute("id", "Twitter_7_");
+
+				pathElement.setAttribute("id", "Twitter_1_");
+				pathElement.setAttribute("fill", "#24A9E6");
+				pathElement.setAttribute("d", "M21.55,9.208C20.985,9.55,20.361,9.8,19.694,9.934c-0.532-0.582-1.291-0.945-2.132-0.945 c-1.612,0-2.92,1.341-2.92,2.995c0,0.235,0.025,0.462,0.075,0.682c-2.427-0.125-4.579-1.316-6.02-3.13 c-0.252,0.444-0.395,0.959-0.395,1.507c0,1.038,0.515,1.955,1.299,2.492c-0.478-0.014-0.929-0.151-1.323-0.374v0.037 c0,1.451,1.007,2.662,2.344,2.936c-0.245,0.07-0.503,0.106-0.77,0.106c-0.188,0-0.372-0.018-0.55-0.053 c0.372,1.189,1.45,2.055,2.728,2.079c-0.999,0.804-2.259,1.283-3.627,1.283c-0.235,0-0.469-0.014-0.697-0.041 c1.293,0.849,2.828,1.344,4.477,1.344c5.373,0,8.31-4.563,8.31-8.52c0-0.13-0.003-0.26-0.008-0.388 c0.571-0.423,1.066-0.95,1.456-1.55c-0.523,0.238-1.086,0.399-1.677,0.472C20.869,10.494,21.332,9.907,21.55,9.208z");
+				
+				pathElement2.setAttribute("fill", "#24A9E6");
+				pathElement2.setAttribute("d", "M15,30C6.729,30,0,23.271,0,15S6.729,0,15,0s15,6.729,15,15S23.271,30,15,30z M15,1.14 C7.357,1.14,1.14,7.357,1.14,15S7.357,28.86,15,28.86S28.86,22.643,28.86,15S22.643,1.14,15,1.14z");
 				break;
 			case "Instagram" :
-				sourceImg.attr("src", "wp-content/themes/Theme/js/social-wall/img/in.png");
-				article.addClass("social_network_" + network);
+				gElement.setAttribute("id", "Instagram_7_");
+
+				pathElement.setAttribute("id", "Instagram_1_");
+				pathElement.setAttribute("fill", "#2A5B83");
+				pathElement.setAttribute("d", "M20.674,7.995H10.053c-0.915,0-1.657,0.74-1.657,1.653v10.63 c0,0.913,0.742,1.653,1.657,1.653h10.622c0.915,0,1.657-0.74,1.657-1.653V9.648C22.331,8.735,21.589,7.995,20.674,7.995z M18.411,10.173c0-0.241,0.195-0.436,0.436-0.436h1.306c0.241,0,0.436,0.195,0.436,0.436v1.306c0,0.241-0.195,0.436-0.436,0.436 h-1.306c-0.241,0-0.436-0.195-0.436-0.436V10.173z M15.38,12.306c1.48,0,2.68,1.197,2.68,2.673c0,1.477-1.2,2.674-2.68,2.674 s-2.679-1.197-2.679-2.674C12.7,13.502,13.9,12.306,15.38,12.306z M21.024,20.188c0,0.241-0.195,0.436-0.436,0.436h-10.45 c-0.241,0-0.436-0.195-0.436-0.436v-6.532h1.742c-0.227,0.327-0.303,0.936-0.303,1.323c0,2.332,1.901,4.229,4.239,4.229 s4.239-1.897,4.239-4.229c0-0.387-0.055-0.987-0.336-1.323h1.742L21.024,20.188L21.024,20.188z");
+				
+				pathElement2.setAttribute("fill", "#2A5B83");
+				pathElement2.setAttribute("d", "M15,30C6.729,30,0,23.271,0,15S6.729,0,15,0s15,6.729,15,15S23.271,30,15,30z M15,1.14 C7.357,1.14,1.14,7.357,1.14,15S7.357,28.86,15,28.86S28.86,22.643,28.86,15S22.643,1.14,15,1.14z");
 				break;
 			case "YouTube" :
-				sourceImg.attr("src", "wp-content/themes/Theme/js/social-wall/img/yt.png");
-				article.addClass("social_network_" + network);
+				pathElement.setAttribute("fill", "#F24033");
+				pathElement.setAttribute("d", "M15,30C6.729,30,0,23.271,0,15S6.729,0,15,0s15,6.729,15,15S23.271,30,15,30z M15,1.14 C7.357,1.14,1.14,7.357,1.14,15S7.357,28.86,15,28.86S28.86,22.643,28.86,15S22.643,1.14,15,1.14z");
+				
+				pathElement2.setAttribute("fill", "#F24033");
+				pathElement2.setAttribute("d", "M20.255,9.442c0,0-2.94-0.127-5.072-0.127s-4.964,0.127-4.964,0.127c-1.4,0-2.428,1.136-2.428,2.536v5.579 c0,1.4,1.026,2.536,2.426,2.536c0,0,2.068,0.158,5.075,0.174c3.007,0.016,4.989-0.174,4.989-0.174c1.4,0,2.511-1.136,2.511-2.536 v-5.579C22.792,10.578,21.655,9.442,20.255,9.442z M13.66,17.074v-4.343l4.175,2.179L13.66,17.074z");
 				break;
 			case "Vimeo" :
-				sourceImg.attr("src", "wp-content/themes/Theme/js/social-wall/img/vm.png");
-				article.addClass("social_network_" + network);
+				gElement.setAttribute("id", "Vimeo_1_");
+
+				pathElement.setAttribute("fill", "#1CB1E6");
+				pathElement.setAttribute("d", "M19.943,9.107c-1.937-0.063-3.247,1.01-3.935,3.214c0.353-0.146,0.697-0.216,1.031-0.216 c0.708,0,1.02,0.389,0.936,1.173c-0.042,0.475-0.353,1.164-0.936,2.072c-0.583,0.906-1.021,1.358-1.312,1.358 c-0.375,0-0.717-0.699-1.031-2.1c-0.104-0.412-0.292-1.463-0.56-3.153c-0.252-1.565-0.918-2.298-2-2.194 c-0.459,0.043-1.146,0.454-2.06,1.237c-0.668,0.597-1.344,1.195-2.03,1.791l0.656,0.836c0.626-0.434,0.989-0.65,1.093-0.65 c0.478,0,0.926,0.742,1.344,2.227c0.375,1.357,0.749,2.719,1.124,4.08c0.561,1.484,1.248,2.224,2.059,2.224 c1.312,0,2.916-1.215,4.81-3.648c1.83-2.326,2.779-4.159,2.839-5.5C22.054,10.064,21.377,9.147,19.943,9.107z");
+				
+				pathElement2.setAttribute("fill", "#1CB1E6");
+				pathElement2.setAttribute("d", "M15,30C6.729,30,0,23.271,0,15S6.729,0,15,0s15,6.729,15,15S23.271,30,15,30z M15,1.14 C7.357,1.14,1.14,7.357,1.14,15S7.357,28.86,15,28.86S28.86,22.643,28.86,15S22.643,1.14,15,1.14z");
 				break;
 		}
 
-		sourceP = $("<p></p>");
-		sourceP.text(data[4]);
+		article.addClass("social_network_" + network);
+
+		sourceP = document.createElement("p");
+		sourceP.innerHTML = data[4];
 
 		aLink = $("<a></a>");
 		aLink.attr({"href": data[2], "target": "_blank"});
 
 		divContent = $("<div></div>");
 		divContent.addClass("social_content");
+
+		if(!(typeof data[1] === "undefined") && data[1].length >= 450){
+			data[1] = data[1].substr(0, 450) + " ...";
+		}
 		divContent.text(data[1]);
 
 		imgContent = $("<img/>");
@@ -379,8 +421,12 @@ var social = {
 		divDate.text(network + " - " + data[3]);
 
 		// Append des éléments
-		divSource.append(sourceImg);
-		divSource.append(sourceP);
+		gElement.appendChild(pathElement);
+		gElement.appendChild(pathElement2);
+		sourceImg.appendChild(gElement);
+
+		divSource.appendChild(sourceImg);
+		divSource.appendChild(sourceP);
 
 		article.append(divSource);
 
@@ -530,6 +576,21 @@ var social = {
 			$(".social_post[data-date='" + allDates[i] + "']").appendTo("#social_wall");
 		}
 
+		if(typeof nbPostsFb === "undefined"){
+			nbPostsFb = 0;
+		}
+
+		if(typeof nbPostsTw === "undefined"){
+			nbPostsTw = 0;
+		}
+
+		if(typeof nbPostsIns === "undefined"){
+			nbPostsIns = 0;
+		}
+
+		if(typeof nbPostsYt === "undefined"){
+			nbPostsYt = 0;
+		}
 		var totalElements = (nbPostsFb + nbPostsTw + nbPostsIns + nbPostsYt);
 
 		console.log("Fb = " + nbPostsFb);
