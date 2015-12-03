@@ -1,5 +1,5 @@
 /*
-	social-wall V1.1
+	social-wall V1.11
 	Made by Jordan Thiervoz
 	OKLM posey
 */
@@ -219,7 +219,10 @@ var social = {
 	},
 	showPosts:function(page, state){
 		function showThePostsInit(){
-			// $("#social_loading").hide();
+			if($loaderElement.attr("id") == "social_loading"){
+				$loaderElement.hide();
+			}
+
 			$loaderElement.removeClass("social_state_0 social_state_1 social_state_2 social_state_3 social_state_4 social_state_5 social_state_6");
 
 			if($(".social_page_1").length == 0){
@@ -274,7 +277,12 @@ var social = {
 
 		if(state == "loadInit"){
 			console.log("Chargement terminé");
-			TweenLite.to($loaderElement, 0.5, { delay : 1.5, onComplete : showThePostsInit});
+			if($loaderElement.attr("id") =="social_loading"){
+				TweenLite.to($loaderElement, 0.5, { alpha: 0, delay : 1.5, onComplete : showThePostsInit});
+			}
+			else{
+				TweenLite.to($loaderElement, 0.5, { delay : 1.5, onComplete : showThePostsInit});
+			}
 		}
 		else if(state == "loadMore"){
 			if($(".social_page_" + page).length != 0){

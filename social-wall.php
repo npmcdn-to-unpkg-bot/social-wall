@@ -1,6 +1,6 @@
 <?php
 /*
-	social-wall V1.1
+	social-wall V1.11
 	Made by Jordan Thiervoz
 	OKLM posey
 */
