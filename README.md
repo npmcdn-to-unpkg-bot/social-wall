@@ -1,10 +1,11 @@
 # social-wall
 A JavaScript / PHP Social Wall
-Version 1.11
+
+Version 1.2
 
 # What is Social-Wall
 social-wall is a... social wall plugin, which allows you to display your latest posts from differents social networks in a grid.
-social-wall uses JavaScript and PHP to retreive and analyze the different posts.
+social-wall uses JavaScript and PHP to retrieve and analyze the different posts.
 ## Socials networks supported
 * Facebook
 * Twitter
@@ -44,10 +45,10 @@ social.init({
 Bravo ! You're now ready to configure your PHP file...
 
 #APIs configuration
-If you have trouble creating any application, take a look at the **Annex** part below.
+_If you have trouble creating any application, take a look at the **Annex** part below._
 
 ##Facebook
-To configure your connection to Facebook all you need is two informations :
+To configure your connection to Facebook all you need is two information :
 * Your `App ID`
 * Your `App Secret`
 
@@ -57,17 +58,27 @@ $FB_app_id = "";
 $FB_app_secret = "";
 $FB_token = "";
 ```
-You don't have to initialize `$FB_token`, social-wall plugin will retreive automatically the Facebook token to connect to your application. So let it empty !
+You don't have to initialize `$FB_token`, social-wall plugin will retrieve automatically the Facebook access token to connect to your application. So let it empty !
 
 ##Twitter
-To be continued...
+Twitter needs 4 information to work :
+* Your `App ID`
+* Your `App Secret`
+* Your `Token`
+* Your `Token Secret`
 
-
+Open the "social-wall.php" file and add your keys into these variables :
+```
+$TW_app_id = "";
+$TW_app_secret = "";
+$TW_token = "";
+$TW_token_secret = "";
+```
 
 #Annex
 ##Facebook Application
 ###Create your own application
-You must create an application on [Facebook for Developpers](https://developers.facebook.com/) to display your data with authorization.
+You must create an application on [Facebook for Developers](https://developers.facebook.com/) to display your data with authorization.
 * On the top menu, go in "My Apps", then click on "Add a new app"
 * Select "Website" as your application's platform
 * Type the name of your new application, click "Create New Facebook App ID"
@@ -76,14 +87,34 @@ You must create an application on [Facebook for Developpers](https://developers.
 ###Get your app informations
 Just look at the `App ID` and `App Secret` fields. Now you can add them to your PHP file, look at the **APIs configuration** part.
 
+##Twitter Application
+###Create your own application
+If you want to access Twitter content, you must create an application on [Twitter Apps](https://apps.twitter.com/).
+* Click "Create a new app"
+* Give it a name, description, website (it can be http://localhost if you are testing)
+* Create your application
+
+###Get your app informations
+* Click on the "Keys and Access Tokens" tab
+
+Your `App ID` is your "Consumer Key".
+
+Your `App Secret` is your "Consumer Secret".
+
+* Click "Generate Tokens"
+
+Here are your `Token` and your `Token Secret`
 
 #Change log
-##V1.11
---> If no "loader element" is entered, hide correctly the loading label.
+##1.2
+* Everything is now working correctly online (especially Facebook !).
+* All posts retrieved are now placed in cache. The cache duration is fixed to 2 days minimum (for now).
+* Some other corrections
 
---> No images for source part on elements, only svgs.
+####1.1.1
+* If no "loader element" is entered, hide correctly the loading label.
+* No images for source part on elements, only svgs.
+* Post content length limit is fixed to 450 characters.
 
---> Post content length limit is fixed to 450 characters.
-
-##V1.0
-It works but it's not responsive and not very customizable
+##1.0
+* It works offline, but it's not responsive and not customizable.
