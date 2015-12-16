@@ -1,6 +1,6 @@
 <?php
 /*
-	social-wall V1.11
+	social-wall V1.2
 	Made by Jordan Thiervoz
 	OKLM posey
 */
@@ -64,27 +64,31 @@ function fetchUrl($url){
 
 // Lance la fonction liée à la méthode choisie pour FB
 function facebook_launch(){
-	if(isset($_POST["id"]) && isset($_POST["method"])){
-		switch($_POST["method"]){
-			case "getFeed" :
-				$page_id = $_POST["id"];
+	global $FB_token;
+
+	if(isset($_POST["id"])){
+		$page_id = $_POST["id"];
+
+		if(isset($_POST["a_t"])){
+			if($_POST["a_t"] == "null")
+				facebook_getToken();
+			else
+				$FB_token = $_POST["a_t"];
+
+			$theFeed = facebook_getFeed($page_id);
+
+			if($theFeed == null){
 				facebook_getToken();
 				echo facebook_getFeed($page_id);
-				break;
-			case "getPost" :
-				$post_id = $_POST["id"];
-				echo facebook_getPost($post_id);
-				break;
-			case "getPicture" :
-				$post_id = $_POST["id"];
-				echo facebook_getPicture($post_id);
-				break;
-			default :
-				echo "{\"error\":{\"message\":\"Wrong method parameter.\"}}";
+			}
+			else
+				echo $theFeed;
 		}
+		else
+			echo "{\"error\":{\"message\":\"Missing Facebook token.\"}}";
 	}
 	else{
-		echo "{\"error\":{\"message\":\"Missing method parameter.\"}}";
+		echo "{\"error\":{\"message\":\"Missing page ID parameter.\"}}";
 		exit();
 	}
 }
@@ -102,23 +106,22 @@ function facebook_getToken(){
 function facebook_getFeed($pageID){
 	global $FB_token;
 
-	$json_object = fetchUrl("https://graph.facebook.com/" . $pageID . "/posts?access_token=" . $FB_token);
+	$json_object = fetchUrl("https://graph.facebook.com/" . $pageID . "/posts?fields=id,message,link,created_time,from,full_picture&access_token=" . $FB_token);
+	
+	$json_decoded = json_decode($json_object);
+	
+	if(array_key_exists("error", $json_decoded)){
+		if($json_decoded->{'error'}->{'message'} == "Invalid OAuth access token signature."){
+			$_POST["a_t"] = null;
+			return null;
+		}
+	}
+	else{
+		$json_object = substr($json_object, 0, -1);
+		$json_object = $json_object . ", \"access_token\": \"" . $FB_token . "\"}";
 
-	return $json_object;
-}
-
-// Récupère les informations du post fb souhaité
-function facebook_getPost($postID){
-	$thePost = fetchUrl("https://graph.facebook.com/" . $postID);
-
-	return $thePost;
-}
-
-// Récupère l'image du post fb en paramètre
-function facebook_getPicture($postID){
-	$thePicture = fetchUrl("https://graph.facebook.com/" . $postID . "?fields=full_picture");
-
-	return $thePicture;
+		return $json_object;
+	}
 }
 
 // Récupère le feed Twitter

@@ -1,5 +1,5 @@
 /*
-	social-wall V1.11
+	social-wall V1.2
 	Made by Jordan Thiervoz
 	OKLM posey
 */
@@ -33,6 +33,12 @@ var maxPages = 3;
 // jQuery element where the loader animation will be done
 var $loaderElement;
 
+// Element to be placed in localStorage for every network
+var fb_posts = "{ \"posts\": [";
+var tw_posts = "{ \"posts\": [";
+var ins_posts = "{ \"posts\": [";
+var yt_posts = "{ \"posts\": [";
+
 // Number of elements per network
 var nbPostsFb;
 var nbPostsTw;
@@ -41,6 +47,12 @@ var nbPostsYt;
 
 // Masonry variable
 var $masonGrid;
+
+// Cache will be used for a certain time before being checked again. For now, the minimum is 2.
+var cacheDuration = 2;
+
+// Network variable initialization
+var fb, tw, ins, yt, vm;
 
 /* END VARIABLE INITIALIZATION */
 
@@ -54,9 +66,6 @@ var $masonGrid;
 // Social wall Initialization, Sorting, Loading, Creating elements, Show articles, Progress verification and Error verification
 var social = {
 	init:function(config){
-		// Network variable initialization
-		var fb, tw, ins, yt, vm;
-
 		console.log("Analyse des paramètres envoyés...");
 
 		// Retreive network parameters
@@ -117,21 +126,21 @@ var social = {
 
 		// Search if other parameters are set
 		if(config.hasOwnProperty("params")){
-			if(config.params.hasOwnProperty("elemPerPage")){
+			if(config.params.hasOwnProperty("elemPerPage"))
 				elemPerPage = config.params.elemPerPage;
-			}
 
-			if(config.params.hasOwnProperty("maxPages")){
+			if(config.params.hasOwnProperty("maxPages"))
 				maxPages = config.params.maxPages;
-			}
 
 			if(config.params.hasOwnProperty("loaderElement")){
 				var loaderElementIsChanged = true;
 				$loaderElement = config.params.loaderElement;
 			}
-			else{
-				loaderElementIsChanged = false;
-			}
+			else
+				var loaderElementIsChanged = false;
+
+			if(config.params.hasOwnProperty("cacheDuration"))
+				cacheDuration = config.params.cacheDuration;
 		}
 
 		// Launch the first loading animation and progression
@@ -139,7 +148,11 @@ var social = {
 
 		// Launch every network if the parameter is not false
 		if(fb != false){
-			social_fb.launchFb(fb);
+			// If elements are not in cache, launch Facebook ajax. Else, create posts with the cache
+			if(localStorage.getItem("fb_elems") === null || localStorage.getItem("fb_elems") == "null")
+				social_fb.launchFb(fb);
+			else
+				social.verifCache("fb");
 		}
 		else{
 			loadingState++;
@@ -147,24 +160,34 @@ var social = {
 		}
 
 		if(tw != false){
-			social_tw.launchTw(tw);
+			// If elements are not in cache, launch Twitter ajax. Else, create posts with the cache
+			if(localStorage.getItem("tw_elems") === null || localStorage.getItem("tw_elems") == "null")
+				social_tw.launchTw(tw);
+			else
+				social.verifCache("tw");
 		}
 		else{
 			loadingState++;
 			social.progressLoading();
 		}
 
-		if(ins != false){
-			social_ins.launchIns(ins);
-		}
+		if(ins != false)
+			// If elements are not in cache, launch Instagram ajax. Else, create posts with the cache
+			if(localStorage.getItem("ins_elems") === null || localStorage.getItem("ins_elems") == "null")
+				social_ins.launchIns(ins);
+			else
+				social.verifCache("ins");
 		else{
 			loadingState++;
 			social.progressLoading();
 		}
 
-		if(yt != false){
-			social_yt.launchYt(yt);
-		}
+		if(yt != false)
+			// If elements are not in cache, launch YouTube ajax. Else, create posts with the cache
+			if(localStorage.getItem("yt_elems") === null || localStorage.getItem("yt_elems") == "null")
+				social_yt.launchYt(yt);
+			else
+				social.verifCache("yt");
 		else{
 			loadingState++;
 			social.progressLoading();
@@ -176,7 +199,6 @@ var social = {
 			loadingState++;
 			social.progressLoading();
 		}
-
 
 		// Click listener on "load more" button (which is not created yet)
 		var isClicked = false;
@@ -219,9 +241,8 @@ var social = {
 	},
 	showPosts:function(page, state){
 		function showThePostsInit(){
-			if($loaderElement.attr("id") == "social_loading"){
+			if($loaderElement.attr("id") == "social_loading")
 				$loaderElement.hide();
-			}
 
 			$loaderElement.removeClass("social_state_0 social_state_1 social_state_2 social_state_3 social_state_4 social_state_5 social_state_6");
 
@@ -277,12 +298,10 @@ var social = {
 
 		if(state == "loadInit"){
 			console.log("Chargement terminé");
-			if($loaderElement.attr("id") =="social_loading"){
+			if($loaderElement.attr("id") =="social_loading")
 				TweenLite.to($loaderElement, 0.5, { alpha: 0, delay : 1.5, onComplete : showThePostsInit});
-			}
-			else{
+			else
 				TweenLite.to($loaderElement, 0.5, { delay : 1.5, onComplete : showThePostsInit});
-			}
 		}
 		else if(state == "loadMore"){
 			if($(".social_page_" + page).length != 0){
@@ -317,9 +336,8 @@ var social = {
 				});
 			}
 
-			if(currentPage == maxPages){
+			if(currentPage == maxPages)
 				$("#social_load_more").hide();
-			}
 		}
 	},
 	createArticle:function(data, network){
@@ -405,24 +423,28 @@ var social = {
 		sourceP.innerHTML = data[4];
 
 		aLink = $("<a></a>");
-		aLink.attr({"href": data[2], "target": "_blank"});
+		if(data[2] != "")
+			aLink.attr({"href": data[2], "target": "_blank"});
+		else
+			aLink.attr("href", null).css("cursor","pointer");
 
 		divContent = $("<div></div>");
 		divContent.addClass("social_content");
 
-		if(!(typeof data[1] === "undefined") && data[1].length >= 450){
+		if(!(typeof data[1] === "undefined") && data[1].length >= 450)
 			data[1] = data[1].substr(0, 450) + " ...";
-		}
+
 		divContent.text(data[1]);
 
 		imgContent = $("<img/>");
 
-		if(data[5] != null){
+		if(data[5] == "")
+			imgContent.css("display","none");
+
+		if(data[5] != null)
 			imgContent.attr("src", data[5]);
-		}
-		else{
+		else
 			imgContent.css("display", "none");
-		}
 
 		divDate = $("<div></div>");
 		divDate.addClass("social_date");
@@ -454,11 +476,12 @@ var social = {
 	verifComplete:function(){
 		var nbElem = $(".social_post").length;
 
-		// console.log("Nombre d'éléments créés : " + nbElem);
-		// console.log($(".social_network_YouTube").length);
-
 		if(!isFbOk){
 			if($(".social_network_Facebook").length == nbPostsFb){
+				// If Facebook is ok AND if the cache doesn't exist.
+				if(localStorage.getItem("fb_elems") === null || localStorage.getItem("fb_elems") == "null")
+					social.finishCache(fb, "fb");
+
 				isFbOk = true;
 				loadingState++;
 				social.progressLoading();
@@ -467,6 +490,10 @@ var social = {
 
 		if(!isTwOk){
 			if($(".social_network_Twitter").length == nbPostsTw){
+				// If Twitter is ok AND if the cache doesn't exist.
+				if(localStorage.getItem("tw_elems") === null || localStorage.getItem("tw_elems") == "null")
+					social.finishCache(tw, "tw");
+
 				isTwOk = true;
 				loadingState++;
 				social.progressLoading();
@@ -475,6 +502,10 @@ var social = {
 
 		if(!isInsOk){
 			if($(".social_network_Instagram").length == nbPostsIns){
+				// If Instagram is ok AND if the cache doesn't exist.
+				if(localStorage.getItem("ins_elems") === null || localStorage.getItem("ins_elems") == "null")
+					social.finishCache(ins, "ins");
+
 				isInsOk = true;
 				loadingState++;
 				social.progressLoading();
@@ -483,6 +514,10 @@ var social = {
 
 		if(!isYtOk){
 			if($(".social_network_YouTube").length == nbPostsYt){
+				// If YouTube is ok AND if the cache doesn't exist.
+				if(localStorage.getItem("yt_elems") === null || localStorage.getItem("yt_elems") == "null")
+					social.finishCache(yt, "yt");
+
 				isYtOk = true;
 				loadingState++;
 				social.progressLoading();
@@ -495,9 +530,8 @@ var social = {
 		// 	}
 		// }
 
-		if(isFbOk && isTwOk && isInsOk && isYtOk && isVmOk){
+		if(isFbOk && isTwOk && isInsOk && isYtOk && isVmOk)
 			social.sortArticles();
-		}
 	},
 	analyzeDate:function(theDate, network){
 		var year, month, day;
@@ -559,20 +593,17 @@ var social = {
 			month = (theDateOk.getMonth() + 1);
 			day = theDateOk.getDate();
 
-			if(month < 10){
+			if(month < 10)
 				month = "0" + month;
-			}
 
-			if(day < 10){
+			if(day < 10)
 				day = "0" + day;
-			}
 
 			theDateOk = theDateOk.getFullYear() + "-" + month + "-" + day;
 		}
 
-		if(network == "yt"){
+		if(network == "yt")
 			theDateOk = theDate.substr(0, 10);
-		}
 
 		return theDateOk;
 	},
@@ -580,25 +611,21 @@ var social = {
 		allDates.sort();
 		allDates.reverse();
 
-		for(var i in allDates){
+		for(var i in allDates)
 			$(".social_post[data-date='" + allDates[i] + "']").appendTo("#social_wall");
-		}
 
-		if(typeof nbPostsFb === "undefined"){
+		if(typeof nbPostsFb === "undefined")
 			nbPostsFb = 0;
-		}
 
-		if(typeof nbPostsTw === "undefined"){
+		if(typeof nbPostsTw === "undefined")
 			nbPostsTw = 0;
-		}
 
-		if(typeof nbPostsIns === "undefined"){
+		if(typeof nbPostsIns === "undefined")
 			nbPostsIns = 0;
-		}
 
-		if(typeof nbPostsYt === "undefined"){
+		if(typeof nbPostsYt === "undefined")
 			nbPostsYt = 0;
-		}
+
 		var totalElements = (nbPostsFb + nbPostsTw + nbPostsIns + nbPostsYt);
 
 		console.log("Fb = " + nbPostsFb);
@@ -607,16 +634,21 @@ var social = {
 		console.log("Yt = " + nbPostsYt);
 		console.log("Total = " + totalElements);
 
-		// Classe les éléments par page (4 pages maximum = 100 éléments)
+		var y;
+
+		// Classe les éléments par page
 		for(var j = elemPerPage; j <= totalElements; j += elemPerPage){
+			y = j;
 			$(".social_post").slice(j - elemPerPage, j).addClass("social_page_" + j / elemPerPage);
 		}
 
+		y += elemPerPage;
+		$(".social_post").slice(y - elemPerPage, y).addClass("social_page_" + y / elemPerPage);
+
 		$(".social_post:not(.social_page_1)").hide();
 
-		for(var j = (maxPages + 1); j <= (totalElements / maxPages); j++){
+		for(var j = (maxPages + 1); j <= (totalElements / maxPages); j++)
 			$(".social_page_" + j).remove();
-		}
 
 		loadingState++;
 		social.progressLoading();
@@ -672,6 +704,211 @@ var social = {
 				return true;
 			}
 		}
+	},
+	verifCache:function(network){
+		var isSame;
+		var longNetwork;
+		var thePosts;
+
+		switch(network){
+			case "fb" :
+				fb_posts = $.parseJSON(localStorage.getItem("fb_elems"));
+
+				if(fb_posts.id_target == fb){
+					isSame = true;
+					thePosts = fb_posts.posts;
+					longNetwork = "Facebook";
+					nbPostsFb = thePosts.length;
+				}
+				else{
+					isSame = false;
+					localStorage.setItem("fb_elems", "null");
+					social_fb.launchFb(fb);
+				}
+
+				break;
+			case "tw" :
+				tw_posts = $.parseJSON(localStorage.getItem("tw_elems"));
+
+				if(tw_posts.id_target == tw){
+					isSame = true;
+					thePosts = tw_posts.posts;
+					longNetwork = "Twitter";
+					nbPostsTw = thePosts.length;
+				}
+				else{
+					isSame = false;
+					localStorage.setItem("tw_elems", "null");
+					social_tw.launchTw(tw);
+				}
+
+				break;
+			case "ins" :
+				ins_posts = $.parseJSON(localStorage.getItem("ins_elems"));
+
+				if(ins_posts.id_target == ins){
+					isSame = true;
+					thePosts = ins_posts.posts;
+					longNetwork = "Instagram";
+					nbPostsIns = thePosts.length;
+				}
+				else{
+					isSame = false;
+					localStorage.setItem("ins_elems", "null");
+					social_ins.launchIns(ins);
+				}
+
+				break;
+			case "yt" :
+				yt_posts = $.parseJSON(localStorage.getItem("yt_elems"));
+
+				if(yt_posts.id_target == yt){
+					isSame = true;
+					thePosts = yt_posts.posts;
+					longNetwork = "YouTube";
+					nbPostsYt = thePosts.length;
+				}
+				else{
+					isSame = false;
+					localStorage.setItem("yt_elems", "null");
+					social_yt.launchYt(yt);
+				}
+
+				break;
+		}
+
+		if(isSame){
+			var cacheOld = social.verifDateCache(network);
+
+			if(cacheOld == false){
+				// If cache is not old, create elements via the cache
+				console.log("Cache is not old, creating cached elements...");
+
+				for(var i = 0; i < thePosts.length; i++){
+					var thisPost = [];
+					thisPost.push(thePosts[i].id);
+					thisPost.push(thePosts[i].message);
+					thisPost.push(thePosts[i].link);
+					thisPost.push(thePosts[i].date);
+					thisPost.push(thePosts[i].author);
+					thisPost.push(thePosts[i].picture);
+
+					social.createArticle(thisPost, longNetwork);
+				}
+			}
+			else{
+				// If the cache is old, check for more recent elements
+				console.log("Cache is old, check for new elements");
+			}
+		}
+	},
+	verifDateCache:function(network){
+		if(network == "fb")
+			var dateCache = fb_posts.creationDate;
+		else if(network == "tw")
+			var dateCache = tw_posts.creationDate;
+		else if(network == "ins")
+			var dateCache = ins_posts.creationDate;
+		else if(network == "yt")
+			var dateCache = yt_posts.creationDate;
+
+		var todayDate = new Date();
+
+		var yearCache = parseInt(dateCache.substr(0, 4));
+		var monthCache = parseInt(dateCache.substr(5, 2));
+		var dayCache = parseInt(dateCache.substr(8, 2));
+
+		var day = todayDate.getDate();
+		var month = (todayDate.getMonth()) + 1;
+		var year = todayDate.getFullYear();
+		
+		if(cacheDuration < 2)
+			cacheDuration = 2;
+
+		if(dayCache != day){
+			if((dayCache - day) < -cacheDuration || (dayCache - day) > cacheDuration)
+				return true;
+			else{
+				if(yearCache != year)
+					return true;
+				else{
+					if(monthCache != month)
+						return true;
+					else
+						return false;
+				}
+			}
+		}
+		else{
+			if(monthCache == month && yearCache == year)
+				return false;
+			else if(yearCache != year || monthCache != month)
+				return true;
+		}
+	},
+	createCache:function(network, id, message, link, date, author, picture){
+		if(!(typeof message === "undefined")){
+			message = message.replace(/\"/g,"\\\"");
+			message = message.replace(new RegExp("(\r\n|\r|\n)", "g"), "");
+		}
+		else
+			message = "";
+
+		if(typeof link === "undefined")
+			link = "";
+
+		if(typeof picture === "undefined")
+			picture = "";
+
+
+		var objectToAdd = "{ \"id\": \"" + id + "\", \"message\": \"" + message + "\", \"link\": \"" + link + "\", \"date\": \"" + date + "\", \"author\": \"" + author + "\", \"picture\": \"" + picture + "\" }";
+
+		switch(network){
+			case "fb" :
+				if(fb_posts != "{ \"posts\": [")
+					fb_posts += ", ";
+
+				fb_posts += objectToAdd;
+				break;
+			case "tw" :
+				if(tw_posts != "{ \"posts\": [")
+					tw_posts += ", ";
+
+				tw_posts += objectToAdd;
+				break;
+			case "ins" :
+				if(ins_posts != "{ \"posts\": [")
+					ins_posts += ", ";
+
+				ins_posts += objectToAdd;
+				break;
+			case "yt" :
+				if(yt_posts != "{ \"posts\": [")
+					yt_posts += ", ";
+
+				yt_posts += objectToAdd;
+				break;
+		}
+	},
+	finishCache:function(id_target, network){
+		var d = new Date();
+		
+		if(network == "fb"){
+			fb_posts += " ], \"creationDate\": \"" + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + "\", \"id_target\": \"" + id_target + "\"}";
+			localStorage.setItem("fb_elems", fb_posts);
+		}
+		else if(network == "tw"){
+			tw_posts += " ], \"creationDate\": \"" + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + "\", \"id_target\": \"" + id_target + "\"}";
+			localStorage.setItem("tw_elems", tw_posts);
+		}
+		else if(network == "ins"){
+			ins_posts += " ], \"creationDate\": \"" + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + "\", \"id_target\": \"" + id_target + "\"}";
+			localStorage.setItem("ins_elems", ins_posts);
+		}
+		else if(network == "yt"){
+			yt_posts += " ], \"creationDate\": \"" + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + "\", \"id_target\": \"" + id_target + "\"}";
+			localStorage.setItem("yt_elems", yt_posts);
+		}
 	}
 }
 
@@ -681,17 +918,20 @@ var social = {
 /* --------------------------------------------------*/
 
 
-
 // Contient toutes les fonctions liées à FB
 var social_fb = {
 	launchFb:function(fbPageId){
+		// Search if the token is already in cache
+		if(localStorage.getItem("fb_a_t") === null || localStorage.getItem("fb_a_t") == "null")
+			localStorage.setItem("fb_a_t", "null");
+
 		// Va lancer la récupération du feed FB
 		$.post(
 			"wp-content/themes/Theme/js/social-wall/social-wall.php",
 			{
 				network : "fb",
-				method : "getFeed",
-				id : fbPageId
+				id : fbPageId,
+				a_t : localStorage.getItem("fb_a_t")
 			}
 		)
 		.done(function(feed, status){
@@ -699,86 +939,42 @@ var social_fb = {
 
 			feed = $.parseJSON(feed);
 
+			// Lance l'analyse des posts FB récupérés
 			if(!social.hasError(feed, "fb")){
-				// Lance l'analyse des posts FB récupérés
-				social_fb.recupPosts(feed);
+				localStorage.setItem("fb_a_t", feed.access_token);
+				social_fb.getPosts(feed);
 			}
 		})
 		.fail(function(xhr, status, error){
 			console.error("Social Wall - Facebook --> " + error);
 		});
 	},
-	recupPosts:function(feedFb){
-		// console.log("Analyse des posts Facebook...");
+	getPosts:function(feedFb){
 		var posts = feedFb.data;
 		nbPostsFb = posts.length;
 
-		var postId, postDate, postPicture;
-
 		for(var i in posts){
-			postId = posts[i].id;
+			var postDate = posts[i].created_time.substr(0, 10);
 
-			$.post(
-				"wp-content/themes/Theme/js/social-wall/social-wall.php",
-				{
-					network : "fb",
-					method : "getPost",
-					id : postId
-				}
-			)
-			.done(function(post, status){
-				post = $.parseJSON(post);
+			var thisPost = [];
+			thisPost.push(posts[i].id);
+			thisPost.push(posts[i].message);
+			thisPost.push(posts[i].link);
+			thisPost.push(postDate);
+			thisPost.push(posts[i].from.name);
+			thisPost.push(posts[i].full_picture);
 
-				if(!social.hasError(post, "fb")){
-					postId = post.id;
+			social.createCache("fb", thisPost[0], thisPost[1], thisPost[2], thisPost[3], thisPost[4], thisPost[5]);
 
-					postDate = post.created_time;
-					postDate = postDate.substr(0, 10);
-
-					postPicture = null;
-
-					var thisPost = [];
-					thisPost.push(postId);
-					thisPost.push(post.message);
-					thisPost.push(post.link);
-					thisPost.push(postDate);
-					thisPost.push(post.from.name);
-
-					$.post(
-						"wp-content/themes/Theme/js/social-wall/social-wall.php",
-						{
-							network : "fb",
-							method : "getPicture",
-							id : postId
-						}
-					)
-					.done(function(picture, status){
-						postPicture = $.parseJSON(picture);
-
-						if(!social.hasError(postPicture, "fb")){
-							postPicture = postPicture.full_picture;
-
-							thisPost.push(postPicture);
-
-							social.createArticle(thisPost, "Facebook");
-						}
-					})
-					.fail(function(xhr, status, error){
-						console.error("Social Wall - Facebook --> " + error);
-					});
-				}
-			})
-			.fail(function(xhr, status, error){
-				console.error("Social Wall - Facebook --> " + error);
-			});
+			social.createArticle(thisPost, "Facebook");
 		}
 	}
 }
 
-/* --------------------------------------------------*/
-/* --------------------------------------------------*/
-/* --------------------------------------------------*/
 
+/* --------------------------------------------------*/
+/* --------------------------------------------------*/
+/* --------------------------------------------------*/
 
 
 // Contient toutes les fonctions liées à TW
@@ -789,7 +985,6 @@ var social_tw = {
 			"wp-content/themes/Theme/js/social-wall/social-wall.php",
 			{
 				network : "tw",
-				method : "",
 				id : twUserId
 			}
 		)
@@ -798,19 +993,16 @@ var social_tw = {
 
 			feed = $.parseJSON(feed);
 
-			if(!social.hasError(feed, "tw")){
-				// Lance l'analyse des posts Twitter récupérés
-				social_tw.recupPosts(feed);
-			}
+			// Lance l'analyse des posts Twitter récupérés
+			if(!social.hasError(feed, "tw"))
+				social_tw.getPosts(feed);
 		})
 		.fail(function(xhr, status, error){
 			console.error("Social Wall - Twitter --> " + error);
 		});
 	},
-	recupPosts:function(feedTw){
+	getPosts:function(feedTw){
 		// console.log("Analyse des posts Twitter...");
-
-		// console.log(feedTw);
 		
 		nbPostsTw = feedTw.length;
 
@@ -826,26 +1018,25 @@ var social_tw = {
 			thisPost.push(feedTw[i].user.screen_name);
 
 			if(feedTw[i].hasOwnProperty("entities")){
-				if(feedTw[i].entities.hasOwnProperty("media")){
+				if(feedTw[i].entities.hasOwnProperty("media"))
 					thisPost.push(feedTw[i].entities.media[0].media_url_https);
-				}
-				else{
+				else
 					thisPost.push(null);
-				}
 			}
-			else{
+			else
 				thisPost.push(null);
-			}
+
+			social.createCache("tw", thisPost[0], thisPost[1], thisPost[2], thisPost[3], thisPost[4], thisPost[5]);
 
 			social.createArticle(thisPost, "Twitter");
 		}
 	}
 }
 
-/* --------------------------------------------------*/
-/* --------------------------------------------------*/
-/* --------------------------------------------------*/
 
+/* --------------------------------------------------*/
+/* --------------------------------------------------*/
+/* --------------------------------------------------*/
 
 
 // Contient toutes les fonctions liées à INS
@@ -856,7 +1047,6 @@ var social_ins = {
 			"wp-content/themes/Theme/js/social-wall/social-wall.php",
 			{
 				network : "ins",
-				method : "",
 				id : insUserId
 			}
 		)
@@ -865,16 +1055,15 @@ var social_ins = {
 
 			feed = $.parseJSON(feed);
 
-			if(!social.hasError(feed, "ins")){
-				// Lance l'analyse des posts Instagram récupérés
-				social_ins.recupPosts(feed);
-			}
+			// Lance l'analyse des posts Instagram récupérés
+			if(!social.hasError(feed, "ins"))
+				social_ins.getPosts(feed);
 		})
 		.fail(function(xhr, status, error){
 			console.error("Social Wall - Instagram --> " + error);
 		});
 	},
-	recupPosts:function(feedIns){
+	getPosts:function(feedIns){
 		// console.log("Analyse des posts Instagram...");
 
 		feedIns = feedIns.data;
@@ -882,15 +1071,6 @@ var social_ins = {
 		nbPostsIns = feedIns.length;
 
 		for(var i in feedIns){
-			/*
-			thisPost[0] = id;
-			thisPost[1] = message;
-			thisPost[2] = lien;
-			thisPost[3] = date;
-			thisPost[4] = auteur;
-			thisPost[5] = image;
-			*/
-
 			var thisPost = [];
 
 			var thisDate = social.analyzeDate(feedIns[i].created_time, "ins");
@@ -902,10 +1082,13 @@ var social_ins = {
 			thisPost.push(feedIns[i].user.full_name);
 			thisPost.push(feedIns[i].images.standard_resolution.url);
 
+			social.createCache("ins", thisPost[0], thisPost[1], thisPost[2], thisPost[3], thisPost[4], thisPost[5]);
+
 			social.createArticle(thisPost, "Instagram");
 		}
 	}
 }
+
 
 /* --------------------------------------------------*/
 /* --------------------------------------------------*/
@@ -920,50 +1103,32 @@ var social_yt = {
 			"wp-content/themes/Theme/js/social-wall/social-wall.php",
 			{
 				network : "yt",
-				method : "",
 				id : ytChannelId
 			}
 		)
 		.done(function(feed, status){
-			// console.log("Requête YouTube 1/4 exécutée");
-
 			feed = $.parseJSON(feed);
 
-			if(!social.hasError(feed, "yt")){
-				// Lance l'analyse des posts YouTube récupérés
-				social_yt.recupPosts(feed, ytChannelId);
-			}
+			// Lance l'analyse des posts YouTube récupérés
+			if(!social.hasError(feed, "yt"))
+				social_yt.getPosts(feed, ytChannelId);
 		})
 		.fail(function(xhr, status, error){
 			console.error("Social Wall - YouTube --> " + error);
 		});
 	},
-	recupPosts:function(feedYt, ytChannelId){
-		// console.log("Analyse des posts YouTube...");
-
-		// console.log(feedYt);
+	getPosts:function(feedYt, ytChannelId){
 		nbPostsYt = feedYt.pageInfo.totalResults;
 
 		feedYt = feedYt.items;
 
 		for(var i in feedYt){
-			/*
-			thisPost[0] = id;
-			thisPost[1] = message;
-			thisPost[2] = lien;
-			thisPost[3] = date;
-			thisPost[4] = auteur;
-			thisPost[5] = image;
-			*/
-
 			var thisPost = [];
 
-			if(feedYt[i].snippet.description == "" || feedYt[i].snippet.description == null){
+			if(feedYt[i].snippet.description == "" || feedYt[i].snippet.description == null)
 				var titleAndDescription = feedYt[i].snippet.title;
-			}
-			else{
+			else
 				var titleAndDescription = feedYt[i].snippet.title + " - " + feedYt[i].snippet.description;
-			}
 			
 			var linkVideo = "https://youtube.com/watch?v=" + feedYt[i].contentDetails.upload.videoId;
 
@@ -989,15 +1154,16 @@ var social_yt = {
 						if(feedYt[i].snippet.thumbnails.hasOwnProperty("standard")){
 							thumbnail = feedYt[i].snippet.thumbnails.standard.url;
 							
-							if(feedYt[i].snippet.thumbnails.hasOwnProperty("maxres")){
+							if(feedYt[i].snippet.thumbnails.hasOwnProperty("maxres"))
 								thumbnail = feedYt[i].snippet.thumbnails.maxres.url;
-							}
 						}
 					}
 				}
 			}
 
 			thisPost.push(thumbnail);
+
+			social.createCache("yt", thisPost[0], thisPost[1], thisPost[2], thisPost[3], thisPost[4], thisPost[5]);
 
 			social.createArticle(thisPost, "YouTube");
 		}
