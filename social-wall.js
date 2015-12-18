@@ -1,5 +1,5 @@
 /*
-	social-wall V1.2
+	social-wall V1.2.1
 	Made by Jordan Thiervoz
 	OKLM posey
 */
@@ -256,25 +256,27 @@ var social = {
 				$("#social_alert").fadeIn();
 			}
 			else{
-				$(".social_post").each(function(i){
-					if($(this).hasClass("social_page_1")){
-						$(this).show();
+				$(".social_post.social_page_1").show();
 
-						// Lance l'affichage de la grid qu'une fois que les images sont toutes chargées
-						$masonGrid = $("#social_wall").imagesLoaded(function(){
-							$masonGrid.masonry({
-								itemSelector: ".social_post",
-								columnWidth: (tailleContainer + 25),
-								isFitWidth: true,
-								percentPosition: true,
-								gutter: 10
-							});
+				$(".social_post.social_page_1").each(function(){
+					// Lance l'affichage de la grid qu'une fois que les images sont toutes chargées
+					$masonGrid = $("#social_wall").imagesLoaded(function(){
+						$masonGrid.masonry({
+							itemSelector: ".social_post",
+							columnWidth: (tailleContainer + 25),
+							isFitWidth: true,
+							percentPosition: true,
+							gutter: 10
 						});
+					});
+				});
 
+				setTimeout(function(){
+					$(".social_post.social_page_1").each(function(i){
 						TweenLite.to($(this), 0, { scale : 0.8 });
 						TweenLite.to($(this), 0.2, { alpha : 1, scale : 1, delay : i * 0.2 });
-					}
-				});
+					});
+				}, 1250);
 
 				var buttonLoadMore = $("<div></div>");
 				buttonLoadMore.attr("id", "social_load_more");
