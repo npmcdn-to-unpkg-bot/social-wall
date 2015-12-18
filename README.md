@@ -1,7 +1,7 @@
 # social-wall
 A JavaScript / PHP Social Wall
 
-Version 1.2
+Version 1.2.1
 
 # What is Social-Wall
 social-wall is a... social wall plugin, which allows you to display your latest posts from differents social networks in a grid.
@@ -105,7 +105,13 @@ Your `App Secret` is your "Consumer Secret".
 
 Here are your `Token` and your `Token Secret`
 
+#Bugs
+* The PHP file is only accessible if it's in a WordPress theme (for now).
+
 #Change log
+####1.2.1
+* Corrections
+
 ##1.2
 * Everything is now working correctly online (especially Facebook !).
 * All posts retrieved are now placed in cache. The cache duration is fixed to 2 days minimum (for now).
