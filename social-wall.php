@@ -1,11 +1,15 @@
 <?php
 /*
-	social-wall V1.2.1
+	social-wall V0.2.1
 	Made by Jordan Thiervoz
 	OKLM posey
 */
 
-// Infos des applications
+/*
+**************************
+********APP PARAMS********
+**************************
+*/
 $FB_app_id = "";
 $FB_app_secret = "";
 $FB_token = "";
@@ -21,7 +25,17 @@ $INS_app_redirect = "";
 $INS_token = "";
 
 $YT_app_id = "";
+/*
+**************************
+******END APP PARAMS******
+**************************
+*/
 
+
+
+//-------------------------------------------------
+//----------------------CODE-----------------------
+//-------------------------------------------------
 social_wall_launch();
 
 function social_wall_launch(){
