@@ -1,7 +1,7 @@
 # social-wall
 A JavaScript / PHP Social Wall
 
-Version 1.2.1
+Version 0.2.1
 
 # What is Social-Wall
 social-wall is a... social wall plugin, which allows you to display your latest posts from differents social networks in a grid.
@@ -25,12 +25,12 @@ Add these librairies to your HTML page **before** adding _social-wall.js_.
 
 ##Initialization
 First, create an element in your HTML file. The id attribute _must_ be "social_wall":
-```
+``` HTML
 <div id="social_wall"></div>
 ```
 
 In your JavaScript file, add these lines :
-```
+``` JavaScript
 social.init({
 	networks : {
 		facebook : "", // Facebook page ID or page name (from your fb page url)
@@ -42,10 +42,11 @@ social.init({
 });
 ```
 
-Bravo ! You're now ready to configure your PHP file...
+#Configurations
+You can configure social-wall...
 
 #APIs configuration
-_If you have trouble creating any application, take a look at the **Annex** part below._
+_If you have trouble creating any application, take a look at the **[Annex](#annex)** part below._
 
 ##Facebook
 To configure your connection to Facebook all you need is two information :
@@ -53,10 +54,9 @@ To configure your connection to Facebook all you need is two information :
 * Your `App Secret`
 
 Open the "social-wall.php" file and add your `App ID` and `App Secret` into these variables :
-```
+``` PHP
 $FB_app_id = "";
 $FB_app_secret = "";
-$FB_token = "";
 ```
 You don't have to initialize `$FB_token`, social-wall plugin will retrieve automatically the Facebook access token to connect to your application. So let it empty !
 
@@ -68,16 +68,34 @@ Twitter needs 4 information to work :
 * Your `Token Secret`
 
 Open the "social-wall.php" file and add your keys into these variables :
-```
+``` PHP
 $TW_app_id = "";
 $TW_app_secret = "";
 $TW_token = "";
 $TW_token_secret = "";
 ```
 
+##Instagram
+Instagram needs 4 information to work :
+* Your `App ID`
+* Your `App Secret`
+* Your `App redirect`
+* Your `Token`
+
+Open the "social-wall.php" file and add your keys into these variables :
+``` PHP
+$INS_app_id = "";
+$INS_app_secret = "";
+$INS_app_redirect = "";
+$INS_token = "";
+```
+
+#YouTube
+All you need for YouTube is one thing : your `App ID`. Place it here `$YT_app_id`.
+
 #Annex
 ##Facebook Application
-###Create your own application
+###Create your application
 You must create an application on [Facebook for Developers](https://developers.facebook.com/) to display your data with authorization.
 * On the top menu, go in "My Apps", then click on "Add a new app"
 * Select "Website" as your application's platform
@@ -88,7 +106,7 @@ You must create an application on [Facebook for Developers](https://developers.f
 Just look at the `App ID` and `App Secret` fields. Now you can add them to your PHP file, look at the **APIs configuration** part.
 
 ##Twitter Application
-###Create your own application
+###Create your application
 If you want to access Twitter content, you must create an application on [Twitter Apps](https://apps.twitter.com/).
 * Click "Create a new app"
 * Give it a name, description, website (it can be http://localhost if you are testing)
@@ -103,24 +121,48 @@ Your `App Secret` is your "Consumer Secret".
 
 * Click "Generate Tokens"
 
-Here are your `Token` and your `Token Secret`
+Here are your `Token` and your `Token Secret`.
+
+##Instagram Application
+###Create your application
+To connect to Instagram you must create an application on [Instagram Dev](https://www.instagram.com/developer/)
+* Click "Register your application" then "Register a New Client"
+* Fill in the form (URL field can be http://localhost)
+* Click the "Security" tab and uncheck the "Disable implicit Oauth" field
+* Create your application
+
+###Get your app informations
+Your app ID is the `Client ID`, your app secret is the `Client Secret` and your URL redirect is your `Website URL`
+To get your token, go to [Instagram Authentication Doc](https://www.instagram.com/developer/authentication/).
+Scroll down to the "Client side" part and follow the instructions to get your `App token`.
+
+#YouTube
+###Create your application
+* Go to [Google Console](https://console.developers.google.com/) and create a project
+* Click "Activate and Manage APIs"
+* Activate "YouTube Data API"
+* Go to "IDs"
+* Create a browser ID
+
+###Get your app informations
+The browser ID key is your `App ID`.
 
 #Bugs
 * The PHP file is only accessible if it's in a WordPress theme (for now).
 
 #Change log
-####1.2.1
-* Corrections
+####0.2.1
+* Corrections.
 
-##1.2
+##0.2
 * Everything is now working correctly online (especially Facebook !).
-* All posts retrieved are now placed in cache. The cache duration is fixed to 2 days minimum (for now).
-* Some other corrections
+* All posts retrieved are now placed in cache (local storage). The cache duration is fixed to 2 days minimum (for now).
+* Some other corrections.
 
-####1.1.1
+####0.1.1
 * If no "loader element" is entered, hide correctly the loading label.
 * No images for source part on elements, only svgs.
 * Post content length limit is fixed to 450 characters.
 
-##1.0
-* It works offline, but it's not responsive and not customizable.
+##0.1
+* It works only offline.
