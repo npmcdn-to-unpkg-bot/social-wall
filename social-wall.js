@@ -1,5 +1,5 @@
 /**
- * social-wall - 0.3
+ * social-wall - 0.3.1
  * Made by Jordan Thiervoz
  * OKLM posey
 **/
@@ -56,6 +56,9 @@ var cacheDuration = 1;
 
 // Network variable initialization
 var fb, tw, ins, yt, vm;
+
+// Device width
+var clientWidth = $(window).width();
 
 /* END VARIABLE INITIALIZATION */
 
@@ -125,7 +128,15 @@ var social = {
 
 		// Initialize the width of every article depending on the #social_wall width
 		tailleContainer = $("#social_wall").width();
-		tailleContainer = Math.floor((tailleContainer / 4) - 35);
+
+		if(clientWidth < 850){
+			if(clientWidth > 600){
+				tailleContainer = Math.floor((tailleContainer / 3) - 35);
+			}
+		}
+		else{
+			tailleContainer = Math.floor((tailleContainer / 4) - 35);
+		}
 
 		var loaderElementIsChanged;
 
@@ -297,7 +308,7 @@ var social = {
 							columnWidth: (tailleContainer + 25),
 							isFitWidth: true,
 							percentPosition: true,
-							gutter: 5
+							gutter: 10
 						});
 					});
 				});
@@ -326,6 +337,11 @@ var social = {
 				buttonLoadMore.append(divBar2);
 
 				$("#social_wall").append(buttonLoadMore);
+
+				if(clientWidth < 850){
+					$("#social_wall #social_load_more").width(clientWidth);
+					$("#social_wall #social_load_more").addClass('littleScreen');
+				}
 			}
 		}
 
@@ -353,7 +369,7 @@ var social = {
 								columnWidth: (tailleContainer + 25),
 								isFitWidth: true,
 								percentPosition: true,
-								gutter: 5
+								gutter: 10
 							});
 						});
 
@@ -368,7 +384,7 @@ var social = {
 						columnWidth: (tailleContainer + 25),
 						isFitWidth: true,
 						percentPosition: true,
-						gutter: 5
+						gutter: 10
 					});
 				});
 			}
@@ -480,7 +496,7 @@ var social = {
 
 		imgContent = $("<img/>");
 
-		if(data[5] == ""){
+		if(data[5] == "" || data[5] == "null"){
 			imgContent.css("display","none");
 		}
 
