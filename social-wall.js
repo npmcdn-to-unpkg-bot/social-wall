@@ -1021,14 +1021,32 @@ var social = {
 		else if(network == "tw"){
 			tw_posts += " ], \"creationDate\": \"" + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + "\", \"id_target\": \"" + id_target + "\"}";
 			localStorage.setItem("tw_elems", tw_posts);
+
+			if(localStorage.getItem("tw_elems").substr(0, 15) == "[object Object]"){
+				var saveCache = "{ \"posts\": [" + localStorage.getItem("tw_elems").substr(17);
+				
+				localStorage.setItem("tw_elems", saveCache);
+			}
 		}
 		else if(network == "ins"){
 			ins_posts += " ], \"creationDate\": \"" + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + "\", \"id_target\": \"" + id_target + "\"}";
 			localStorage.setItem("ins_elems", ins_posts);
+
+			if(localStorage.getItem("ins_elems").substr(0, 15) == "[object Object]"){
+				var saveCache = "{ \"posts\": [" + localStorage.getItem("ins_elems").substr(17);
+				
+				localStorage.setItem("ins_elems", saveCache);
+			}
 		}
 		else if(network == "yt"){
 			yt_posts += " ], \"creationDate\": \"" + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + "\", \"id_target\": \"" + id_target + "\"}";
 			localStorage.setItem("yt_elems", yt_posts);
+
+			if(localStorage.getItem("yt_elems").substr(0, 15) == "[object Object]"){
+				var saveCache = "{ \"posts\": [" + localStorage.getItem("yt_elems").substr(17);
+				
+				localStorage.setItem("yt_elems", saveCache);
+			}
 		}
 	}
 };
