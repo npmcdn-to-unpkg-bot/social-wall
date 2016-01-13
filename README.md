@@ -1,12 +1,12 @@
 # social-wall
 A JavaScript / PHP Social Wall
 
-Version 0.3
+Version 0.3.1
 
-# What is Social-Wall
-social-wall is a... social wall plugin, which allows you to display your latest posts from differents social networks in a grid.
+# What is social-wall
+social-wall is a JavaScript (and PHP) plugin which allows you to display the latest posts from differents social networks in a grid.
 social-wall uses JavaScript and PHP to retrieve and analyze the different posts.
-## Socials networks supported
+## Social networks supported
 * Facebook
 * Twitter
 * Instagram
@@ -51,7 +51,7 @@ social.init({
 });
 ```
 
-#Configurations
+#Configuration
 You can configure social-wall by adding the `params` array.
 
 The following snippet shows every parameter available for now (they are all optional) :
@@ -186,6 +186,10 @@ The browser ID key is your `App ID`.
 * Don't use a PHP file anymore.
 
 #Change log
+####0.3.1
+* Responsive layout.
+* Bug fix for broken images.
+
 ##0.3
 * PHP URL can be modified with a new parameter : `phpURL`.
 * Posts are now correctly created when the cache is old.
