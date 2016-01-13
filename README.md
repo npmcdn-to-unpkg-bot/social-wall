@@ -1,7 +1,7 @@
 # social-wall
 A JavaScript / PHP Social Wall
 
-Version 0.2.1
+Version 0.3
 
 # What is Social-Wall
 social-wall is a... social wall plugin, which allows you to display your latest posts from differents social networks in a grid.
@@ -21,7 +21,15 @@ social-wall requires these librairies to work:
 * **masonry**, to build a grid layout easily
 * **Imagesloaded**, combined with masonry. It detects when images are loaded, then it launch the masonry grid.
 
-Add these librairies to your HTML page **before** adding _social-wall.js_.
+Add these librairies to your HTML page **before** adding _social-wall.js_ :
+
+``` HTML
+<script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/TweenMax.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.0.0/imagesloaded.pkgd.min.js"></script>
+<script src="http://cdnjs.cloudflare.com/ajax/libs/masonry/3.3.2/masonry.pkgd.min.js"></script>
+<script src="/js/social-wall.js"></script>
+```
 
 ##Initialization
 First, create an element in your HTML file. The id attribute _must_ be "social_wall":
@@ -30,6 +38,7 @@ First, create an element in your HTML file. The id attribute _must_ be "social_w
 ```
 
 In your JavaScript file, add these lines :
+
 ``` JavaScript
 social.init({
 	networks : {
@@ -43,7 +52,28 @@ social.init({
 ```
 
 #Configurations
-You can configure social-wall...
+You can configure social-wall by adding the `params` array.
+
+The following snippet shows every parameter available for now (they are all optional) :
+
+``` JavaScript
+social.init({
+	networks : {
+		facebook : "",
+		twitter : "",
+		instagram : "",
+		youtube : "",
+		vimeo : ""
+	},
+	params : {
+		elemPerPage : 6,
+		maxPages : 2,
+		cacheDuration : 2,
+		loaderElement : $("#myElement"),
+		phpURL : "http://localhost/myFolder/anotherFolder/"
+	}
+});
+```
 
 #APIs configuration
 _If you have trouble creating any application, take a look at the **[Annex](#annex)** part below._
@@ -111,6 +141,8 @@ If you want to access Twitter content, you must create an application on [Twitte
 * Click "Create a new app"
 * Give it a name, description, website (it can be http://localhost if you are testing)
 * Create your application
+* Modify the access level to Read-Only (App permissions)
+* Click "Settings" and uncheck "Allow this application to be used to Sign in with Twitter"
 
 ###Get your app informations
 * Click on the "Keys and Access Tokens" tab
@@ -119,7 +151,7 @@ Your `App ID` is your "Consumer Key".
 
 Your `App Secret` is your "Consumer Secret".
 
-* Click "Generate Tokens"
+* Click "Create my Access Tokens"
 
 Here are your `Token` and your `Token Secret`.
 
@@ -147,10 +179,18 @@ Scroll down to the "Client side" part and follow the instructions to get your `A
 ###Get your app informations
 The browser ID key is your `App ID`.
 
-#Bugs
-* The PHP file is only accessible if it's in a WordPress theme (for now).
+#Bugs and changes to make
+* CSS not implemented.
+* Remove the usage of TweenLite & jQuery.
+* Add link to the account in the top title of every post.
+* Don't use a PHP file anymore.
 
 #Change log
+##0.3
+* PHP URL can be modified with a new parameter : `phpURL`.
+* Posts are now correctly created when the cache is old.
+* Corrections.
+
 ####0.2.1
 * Corrections.
 
