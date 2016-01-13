@@ -1,8 +1,8 @@
-/*
-	social-wall V0.2.1
-	Made by Jordan Thiervoz
-	OKLM posey
-*/
+/**
+ * social-wall - 0.3
+ * Made by Jordan Thiervoz
+ * OKLM posey
+**/
 
 /* START VARIABLE INITIALIZATION */
 // Social wall width
@@ -30,6 +30,9 @@ var elemPerPage = 8;
 // Maximum pages
 var maxPages = 3;
 
+// PHP URL
+var phpURL = "/";
+
 // jQuery element where the loader animation will be done
 var $loaderElement;
 
@@ -48,8 +51,8 @@ var nbPostsYt;
 // Masonry variable
 var $masonGrid;
 
-// Cache will be used for a certain time before being checked again. For now, the minimum is 2.
-var cacheDuration = 2;
+// Cache will be used for a certain time before being checked again. For now, the minimum is 1.
+var cacheDuration = 1;
 
 // Network variable initialization
 var fb, tw, ins, yt, vm;
@@ -124,23 +127,41 @@ var social = {
 		tailleContainer = $("#social_wall").width();
 		tailleContainer = Math.floor((tailleContainer / 4) - 35);
 
+		var loaderElementIsChanged;
+
 		// Search if other parameters are set
 		if(config.hasOwnProperty("params")){
-			if(config.params.hasOwnProperty("elemPerPage"))
+			if(config.params.hasOwnProperty("elemPerPage")){
 				elemPerPage = config.params.elemPerPage;
+			}
 
-			if(config.params.hasOwnProperty("maxPages"))
+			if(config.params.hasOwnProperty("maxPages")){
 				maxPages = config.params.maxPages;
+			}
 
 			if(config.params.hasOwnProperty("loaderElement")){
-				var loaderElementIsChanged = true;
+				loaderElementIsChanged = true;
 				$loaderElement = config.params.loaderElement;
 			}
-			else
-				var loaderElementIsChanged = false;
+			else{
+				loaderElementIsChanged = false;
+			}
 
-			if(config.params.hasOwnProperty("cacheDuration"))
+			if(config.params.hasOwnProperty("cacheDuration")){
 				cacheDuration = config.params.cacheDuration;
+
+				if(cacheDuration < 1){
+					cacheDuration = 1;
+				}
+			}
+
+			if(config.params.hasOwnProperty("phpURL")){
+				phpURL = config.params.phpURL;
+
+				if(phpURL.substr(-1) != "/"){
+					phpURL += "/";
+				}
+			}
 		}
 
 		// Launch the first loading animation and progression
@@ -149,10 +170,12 @@ var social = {
 		// Launch every network if the parameter is not false
 		if(fb != false){
 			// If elements are not in cache, launch Facebook ajax. Else, create posts with the cache
-			if(localStorage.getItem("fb_elems") === null || localStorage.getItem("fb_elems") == "null")
+			if(localStorage.getItem("fb_elems") === null || localStorage.getItem("fb_elems") == "null"){
 				social_fb.launchFb(fb);
-			else
+			}
+			else{
 				social.verifCache("fb");
+			}
 		}
 		else{
 			loadingState++;
@@ -161,10 +184,12 @@ var social = {
 
 		if(tw != false){
 			// If elements are not in cache, launch Twitter ajax. Else, create posts with the cache
-			if(localStorage.getItem("tw_elems") === null || localStorage.getItem("tw_elems") == "null")
+			if(localStorage.getItem("tw_elems") === null || localStorage.getItem("tw_elems") == "null"){
 				social_tw.launchTw(tw);
-			else
+			}
+			else{
 				social.verifCache("tw");
+			}
 		}
 		else{
 			loadingState++;
@@ -173,10 +198,12 @@ var social = {
 
 		if(ins != false)
 			// If elements are not in cache, launch Instagram ajax. Else, create posts with the cache
-			if(localStorage.getItem("ins_elems") === null || localStorage.getItem("ins_elems") == "null")
+			if(localStorage.getItem("ins_elems") === null || localStorage.getItem("ins_elems") == "null"){
 				social_ins.launchIns(ins);
-			else
+			}
+			else{
 				social.verifCache("ins");
+			}
 		else{
 			loadingState++;
 			social.progressLoading();
@@ -184,10 +211,12 @@ var social = {
 
 		if(yt != false)
 			// If elements are not in cache, launch YouTube ajax. Else, create posts with the cache
-			if(localStorage.getItem("yt_elems") === null || localStorage.getItem("yt_elems") == "null")
+			if(localStorage.getItem("yt_elems") === null || localStorage.getItem("yt_elems") == "null"){
 				social_yt.launchYt(yt);
-			else
+			}
+			else{
 				social.verifCache("yt");
+			}
 		else{
 			loadingState++;
 			social.progressLoading();
@@ -241,8 +270,10 @@ var social = {
 	},
 	showPosts:function(page, state){
 		function showThePostsInit(){
-			if($loaderElement.attr("id") == "social_loading")
+			if($loaderElement.attr("id") == "social_loading"){{
 				$loaderElement.hide();
+			}
+			}
 
 			$loaderElement.removeClass("social_state_0 social_state_1 social_state_2 social_state_3 social_state_4 social_state_5 social_state_6");
 
@@ -266,7 +297,7 @@ var social = {
 							columnWidth: (tailleContainer + 25),
 							isFitWidth: true,
 							percentPosition: true,
-							gutter: 10
+							gutter: 5
 						});
 					});
 				});
@@ -276,7 +307,7 @@ var social = {
 						TweenLite.to($(this), 0, { scale : 0.8 });
 						TweenLite.to($(this), 0.2, { alpha : 1, scale : 1, delay : i * 0.2 });
 					});
-				}, 1250);
+				}, 2000);
 
 				var buttonLoadMore = $("<div></div>");
 				buttonLoadMore.attr("id", "social_load_more");
@@ -300,10 +331,14 @@ var social = {
 
 		if(state == "loadInit"){
 			console.log("Chargement terminé");
-			if($loaderElement.attr("id") =="social_loading")
+			if($loaderElement.attr("id") =="social_loading"){{
 				TweenLite.to($loaderElement, 0.5, { alpha: 0, delay : 1.5, onComplete : showThePostsInit});
-			else
+			}
+			}
+			else{{
 				TweenLite.to($loaderElement, 0.5, { delay : 1.5, onComplete : showThePostsInit});
+			}
+			}
 		}
 		else if(state == "loadMore"){
 			if($(".social_page_" + page).length != 0){
@@ -318,7 +353,7 @@ var social = {
 								columnWidth: (tailleContainer + 25),
 								isFitWidth: true,
 								percentPosition: true,
-								gutter: 10
+								gutter: 5
 							});
 						});
 
@@ -333,13 +368,15 @@ var social = {
 						columnWidth: (tailleContainer + 25),
 						isFitWidth: true,
 						percentPosition: true,
-						gutter: 10
+						gutter: 5
 					});
 				});
 			}
 
-			if(currentPage == maxPages)
+			if(currentPage == maxPages){{
 				$("#social_load_more").hide();
+			}
+			}
 		}
 	},
 	createArticle:function(data, network){
@@ -425,28 +462,34 @@ var social = {
 		sourceP.innerHTML = data[4];
 
 		aLink = $("<a></a>");
-		if(data[2] != "")
+		if(data[2] != ""){
 			aLink.attr({"href": data[2], "target": "_blank"});
-		else
+		}
+		else{
 			aLink.attr("href", null).css("cursor","pointer");
+		}
 
 		divContent = $("<div></div>");
 		divContent.addClass("social_content");
 
-		if(!(typeof data[1] === "undefined") && data[1].length >= 450)
-			data[1] = data[1].substr(0, 450) + " ...";
+		if(!(typeof data[1] === "undefined") && data[1].length >= 375){
+			data[1] = data[1].substr(0, 375) + " ...";
+		}
 
 		divContent.text(data[1]);
 
 		imgContent = $("<img/>");
 
-		if(data[5] == "")
+		if(data[5] == ""){
 			imgContent.css("display","none");
+		}
 
-		if(data[5] != null)
+		if(data[5] != null){
 			imgContent.attr("src", data[5]);
-		else
+		}
+		else{
 			imgContent.css("display", "none");
+		}
 
 		divDate = $("<div></div>");
 		divDate.addClass("social_date");
@@ -476,13 +519,14 @@ var social = {
 		social.verifComplete();
 	},
 	verifComplete:function(){
-		var nbElem = $(".social_post").length;
+		// var nbElem = $(".social_post").length;
 
 		if(!isFbOk){
 			if($(".social_network_Facebook").length == nbPostsFb){
 				// If Facebook is ok AND if the cache doesn't exist.
-				if(localStorage.getItem("fb_elems") === null || localStorage.getItem("fb_elems") == "null")
+				if(localStorage.getItem("fb_elems") === null || localStorage.getItem("fb_elems") == "null"){
 					social.finishCache(fb, "fb");
+				}
 
 				isFbOk = true;
 				loadingState++;
@@ -493,8 +537,9 @@ var social = {
 		if(!isTwOk){
 			if($(".social_network_Twitter").length == nbPostsTw){
 				// If Twitter is ok AND if the cache doesn't exist.
-				if(localStorage.getItem("tw_elems") === null || localStorage.getItem("tw_elems") == "null")
+				if(localStorage.getItem("tw_elems") === null || localStorage.getItem("tw_elems") == "null"){
 					social.finishCache(tw, "tw");
+				}
 
 				isTwOk = true;
 				loadingState++;
@@ -505,8 +550,9 @@ var social = {
 		if(!isInsOk){
 			if($(".social_network_Instagram").length == nbPostsIns){
 				// If Instagram is ok AND if the cache doesn't exist.
-				if(localStorage.getItem("ins_elems") === null || localStorage.getItem("ins_elems") == "null")
+				if(localStorage.getItem("ins_elems") === null || localStorage.getItem("ins_elems") == "null"){
 					social.finishCache(ins, "ins");
+				}
 
 				isInsOk = true;
 				loadingState++;
@@ -517,8 +563,9 @@ var social = {
 		if(!isYtOk){
 			if($(".social_network_YouTube").length == nbPostsYt){
 				// If YouTube is ok AND if the cache doesn't exist.
-				if(localStorage.getItem("yt_elems") === null || localStorage.getItem("yt_elems") == "null")
+				if(localStorage.getItem("yt_elems") === null || localStorage.getItem("yt_elems") == "null"){
 					social.finishCache(yt, "yt");
+				}
 
 				isYtOk = true;
 				loadingState++;
@@ -532,8 +579,9 @@ var social = {
 		// 	}
 		// }
 
-		if(isFbOk && isTwOk && isInsOk && isYtOk && isVmOk)
+		if(isFbOk && isTwOk && isInsOk && isYtOk && isVmOk){
 			social.sortArticles();
+		}
 	},
 	analyzeDate:function(theDate, network){
 		var year, month, day;
@@ -595,17 +643,20 @@ var social = {
 			month = (theDateOk.getMonth() + 1);
 			day = theDateOk.getDate();
 
-			if(month < 10)
+			if(month < 10){
 				month = "0" + month;
+			}
 
-			if(day < 10)
+			if(day < 10){
 				day = "0" + day;
+			}
 
 			theDateOk = theDateOk.getFullYear() + "-" + month + "-" + day;
 		}
 
-		if(network == "yt")
+		if(network == "yt"){
 			theDateOk = theDate.substr(0, 10);
+		}
 
 		return theDateOk;
 	},
@@ -613,28 +664,33 @@ var social = {
 		allDates.sort();
 		allDates.reverse();
 
-		for(var i in allDates)
+		for(var i in allDates){
 			$(".social_post[data-date='" + allDates[i] + "']").appendTo("#social_wall");
+		}
 
-		if(typeof nbPostsFb === "undefined")
+		if(typeof nbPostsFb === "undefined"){
 			nbPostsFb = 0;
+		}
 
-		if(typeof nbPostsTw === "undefined")
+		if(typeof nbPostsTw === "undefined"){
 			nbPostsTw = 0;
+		}
 
-		if(typeof nbPostsIns === "undefined")
+		if(typeof nbPostsIns === "undefined"){
 			nbPostsIns = 0;
+		}
 
-		if(typeof nbPostsYt === "undefined")
+		if(typeof nbPostsYt === "undefined"){
 			nbPostsYt = 0;
+		}
 
 		var totalElements = (nbPostsFb + nbPostsTw + nbPostsIns + nbPostsYt);
 
-		console.log("Fb = " + nbPostsFb);
-		console.log("Tw = " + nbPostsTw);
-		console.log("Ins = " + nbPostsIns);
-		console.log("Yt = " + nbPostsYt);
-		console.log("Total = " + totalElements);
+		// console.log("Fb = " + nbPostsFb);
+		// console.log("Tw = " + nbPostsTw);
+		// console.log("Ins = " + nbPostsIns);
+		// console.log("Yt = " + nbPostsYt);
+		// console.log("Total = " + totalElements);
 
 		var y;
 
@@ -649,8 +705,9 @@ var social = {
 
 		$(".social_post:not(.social_page_1)").hide();
 
-		for(var j = (maxPages + 1); j <= (totalElements / maxPages); j++)
-			$(".social_page_" + j).remove();
+		for(var k = (maxPages + 1); k <= (totalElements / maxPages); k++){
+			$(".social_page_" + k).remove();
+		}
 
 		loadingState++;
 		social.progressLoading();
@@ -801,51 +858,79 @@ var social = {
 			else{
 				// If the cache is old, check for more recent elements
 				console.log("Cache is old, check for new elements");
+				
+				if(network == "fb"){
+					localStorage.setItem("fb_elems", "null");
+					social_fb.launchFb(fb);
+				}
+				else if(network == "tw"){
+					localStorage.setItem("tw_elems", "null");
+					social_tw.launchTw(tw);
+				}
+				else if(network == "ins"){
+					localStorage.setItem("ins_elems", "null");
+					social_ins.launchIns(ins);
+				}
+				else if(network == "yt"){
+					localStorage.setItem("yt_elems", "null");
+					social_yt.launchYt(yt);
+				}
 			}
 		}
 	},
 	verifDateCache:function(network){
-		if(network == "fb")
-			var dateCache = fb_posts.creationDate;
-		else if(network == "tw")
-			var dateCache = tw_posts.creationDate;
-		else if(network == "ins")
-			var dateCache = ins_posts.creationDate;
-		else if(network == "yt")
-			var dateCache = yt_posts.creationDate;
+		var dateCache;
+
+		if(network == "fb"){
+			dateCache = fb_posts.creationDate;
+		}
+		else if(network == "tw"){
+			dateCache = tw_posts.creationDate;
+		}
+		else if(network == "ins"){
+			dateCache = ins_posts.creationDate;
+		}
+		else if(network == "yt"){
+			dateCache = yt_posts.creationDate;
+		}
 
 		var todayDate = new Date();
 
-		var yearCache = parseInt(dateCache.substr(0, 4));
-		var monthCache = parseInt(dateCache.substr(5, 2));
-		var dayCache = parseInt(dateCache.substr(8, 2));
+		dateCache = dateCache.split("-");
+
+		var yearCache = dateCache[0];
+		var monthCache = dateCache[1];
+		var dayCache = dateCache[2];
 
 		var day = todayDate.getDate();
 		var month = (todayDate.getMonth()) + 1;
 		var year = todayDate.getFullYear();
-		
-		if(cacheDuration < 2)
-			cacheDuration = 2;
 
 		if(dayCache != day){
-			if((dayCache - day) < -cacheDuration || (dayCache - day) > cacheDuration)
+			if((dayCache - day) < -cacheDuration || (dayCache - day) > cacheDuration){
 				return true;
+			}
 			else{
-				if(yearCache != year)
+				if(yearCache != year){
 					return true;
+				}
 				else{
-					if(monthCache != month)
+					if(monthCache != month){
 						return true;
-					else
+					}
+					else{
 						return false;
+					}
 				}
 			}
 		}
 		else{
-			if(monthCache == month && yearCache == year)
+			if(monthCache == month && yearCache == year){
 				return false;
-			else if(yearCache != year || monthCache != month)
+			}
+			else if(yearCache != year || monthCache != month){
 				return true;
+			}
 		}
 	},
 	createCache:function(network, id, message, link, date, author, picture){
@@ -853,40 +938,52 @@ var social = {
 			message = message.replace(/\"/g,"\\\"");
 			message = message.replace(new RegExp("(\r\n|\r|\n)", "g"), "");
 		}
-		else
+		else{
 			message = "";
+		}
 
-		if(typeof link === "undefined")
+		if(typeof link === "undefined"){
 			link = "";
+		}
 
-		if(typeof picture === "undefined")
+		if(typeof picture === "undefined"){
 			picture = "";
+		}
 
 
 		var objectToAdd = "{ \"id\": \"" + id + "\", \"message\": \"" + message + "\", \"link\": \"" + link + "\", \"date\": \"" + date + "\", \"author\": \"" + author + "\", \"picture\": \"" + picture + "\" }";
 
 		switch(network){
 			case "fb" :
-				if(fb_posts != "{ \"posts\": [")
+				// console.log(fb_posts);
+				if(fb_posts == "null"){
+					fb_posts = "{ \"posts\": [";
+				}
+
+				if(fb_posts != "{ \"posts\": ["){
 					fb_posts += ", ";
+				}
 
 				fb_posts += objectToAdd;
 				break;
 			case "tw" :
-				if(tw_posts != "{ \"posts\": [")
+				if(tw_posts != "{ \"posts\": ["){
 					tw_posts += ", ";
+				}
 
 				tw_posts += objectToAdd;
 				break;
 			case "ins" :
-				if(ins_posts != "{ \"posts\": [")
+				if(ins_posts != "{ \"posts\": ["){
 					ins_posts += ", ";
+				}
 
 				ins_posts += objectToAdd;
 				break;
 			case "yt" :
-				if(yt_posts != "{ \"posts\": [")
+				if(yt_posts != "{ \"posts\": ["){
 					yt_posts += ", ";
+				}
 
 				yt_posts += objectToAdd;
 				break;
@@ -898,6 +995,12 @@ var social = {
 		if(network == "fb"){
 			fb_posts += " ], \"creationDate\": \"" + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + "\", \"id_target\": \"" + id_target + "\"}";
 			localStorage.setItem("fb_elems", fb_posts);
+
+			if(localStorage.getItem("fb_elems").substr(0, 15) == "[object Object]"){
+				var saveCache = "{ \"posts\": [" + localStorage.getItem("fb_elems").substr(17);
+				
+				localStorage.setItem("fb_elems", saveCache);
+			}
 		}
 		else if(network == "tw"){
 			tw_posts += " ], \"creationDate\": \"" + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + "\", \"id_target\": \"" + id_target + "\"}";
@@ -912,7 +1015,7 @@ var social = {
 			localStorage.setItem("yt_elems", yt_posts);
 		}
 	}
-}
+};
 
 
 /* --------------------------------------------------*/
@@ -924,19 +1027,20 @@ var social = {
 var social_fb = {
 	launchFb:function(fbPageId){
 		// Search if the token is already in cache
-		if(localStorage.getItem("fb_a_t") === null || localStorage.getItem("fb_a_t") == "null")
+		if(localStorage.getItem("fb_a_t") === null || localStorage.getItem("fb_a_t") == "null"){
 			localStorage.setItem("fb_a_t", "null");
+		}
 
 		// Va lancer la récupération du feed FB
 		$.post(
-			"wp-content/themes/Theme/js/social-wall/social-wall.php",
+			phpURL + "social-wall.php",
 			{
 				network : "fb",
 				id : fbPageId,
 				a_t : localStorage.getItem("fb_a_t")
 			}
 		)
-		.done(function(feed, status){
+		.done(function(feed){
 			// console.log("Requête Facebook exécutée");
 
 			feed = $.parseJSON(feed);
@@ -971,7 +1075,7 @@ var social_fb = {
 			social.createArticle(thisPost, "Facebook");
 		}
 	}
-}
+};
 
 
 /* --------------------------------------------------*/
@@ -984,20 +1088,21 @@ var social_tw = {
 	launchTw:function(twUserId){
 		// Va lancer la récupération du feed Twitter
 		$.post(
-			"wp-content/themes/Theme/js/social-wall/social-wall.php",
+			phpURL + "social-wall.php",
 			{
 				network : "tw",
 				id : twUserId
 			}
 		)
-		.done(function(feed, status){
+		.done(function(feed){
 			// console.log("Requête Twitter exécutée");
 
 			feed = $.parseJSON(feed);
 
 			// Lance l'analyse des posts Twitter récupérés
-			if(!social.hasError(feed, "tw"))
+			if(!social.hasError(feed, "tw")){
 				social_tw.getPosts(feed);
+			}
 		})
 		.fail(function(xhr, status, error){
 			console.error("Social Wall - Twitter --> " + error);
@@ -1020,10 +1125,12 @@ var social_tw = {
 			thisPost.push(feedTw[i].user.screen_name);
 
 			if(feedTw[i].hasOwnProperty("entities")){
-				if(feedTw[i].entities.hasOwnProperty("media"))
+				if(feedTw[i].entities.hasOwnProperty("media")){
 					thisPost.push(feedTw[i].entities.media[0].media_url_https);
-				else
+				}
+				else{
 					thisPost.push(null);
+				}
 			}
 			else
 				thisPost.push(null);
@@ -1033,7 +1140,7 @@ var social_tw = {
 			social.createArticle(thisPost, "Twitter");
 		}
 	}
-}
+};
 
 
 /* --------------------------------------------------*/
@@ -1046,20 +1153,21 @@ var social_ins = {
 	launchIns:function(insUserId){
 		// Va lancer la récupération du feed Instagram
 		$.post(
-			"wp-content/themes/Theme/js/social-wall/social-wall.php",
+			phpURL + "social-wall.php",
 			{
 				network : "ins",
 				id : insUserId
 			}
 		)
-		.done(function(feed, status){
+		.done(function(feed){
 			// console.log("Requête Instagram exécutée");
 
 			feed = $.parseJSON(feed);
 
 			// Lance l'analyse des posts Instagram récupérés
-			if(!social.hasError(feed, "ins"))
+			if(!social.hasError(feed, "ins")){
 				social_ins.getPosts(feed);
+			}
 		})
 		.fail(function(xhr, status, error){
 			console.error("Social Wall - Instagram --> " + error);
@@ -1089,7 +1197,7 @@ var social_ins = {
 			social.createArticle(thisPost, "Instagram");
 		}
 	}
-}
+};
 
 
 /* --------------------------------------------------*/
@@ -1102,35 +1210,39 @@ var social_yt = {
 	launchYt:function(ytChannelId){
 		// Va lancer la récupération du feed YouTube
 		$.post(
-			"wp-content/themes/Theme/js/social-wall/social-wall.php",
+			phpURL + "social-wall.php",
 			{
 				network : "yt",
 				id : ytChannelId
 			}
 		)
-		.done(function(feed, status){
+		.done(function(feed){
 			feed = $.parseJSON(feed);
 
 			// Lance l'analyse des posts YouTube récupérés
-			if(!social.hasError(feed, "yt"))
-				social_yt.getPosts(feed, ytChannelId);
+			if(!social.hasError(feed, "yt")){
+				social_yt.getPosts(feed);
+			}
 		})
 		.fail(function(xhr, status, error){
 			console.error("Social Wall - YouTube --> " + error);
 		});
 	},
-	getPosts:function(feedYt, ytChannelId){
+	getPosts:function(feedYt){
 		nbPostsYt = feedYt.pageInfo.totalResults;
 
 		feedYt = feedYt.items;
 
 		for(var i in feedYt){
 			var thisPost = [];
+			var titleAndDescription;
 
-			if(feedYt[i].snippet.description == "" || feedYt[i].snippet.description == null)
-				var titleAndDescription = feedYt[i].snippet.title;
-			else
-				var titleAndDescription = feedYt[i].snippet.title + " - " + feedYt[i].snippet.description;
+			if(feedYt[i].snippet.description == "" || feedYt[i].snippet.description == null){
+				titleAndDescription = feedYt[i].snippet.title;
+			}
+			else{
+				titleAndDescription = feedYt[i].snippet.title + " - " + feedYt[i].snippet.description;
+			}
 			
 			var linkVideo = "https://youtube.com/watch?v=" + feedYt[i].contentDetails.upload.videoId;
 
@@ -1156,8 +1268,9 @@ var social_yt = {
 						if(feedYt[i].snippet.thumbnails.hasOwnProperty("standard")){
 							thumbnail = feedYt[i].snippet.thumbnails.standard.url;
 							
-							if(feedYt[i].snippet.thumbnails.hasOwnProperty("maxres"))
+							if(feedYt[i].snippet.thumbnails.hasOwnProperty("maxres")){
 								thumbnail = feedYt[i].snippet.thumbnails.maxres.url;
+							}
 						}
 					}
 				}
@@ -1170,4 +1283,4 @@ var social_yt = {
 			social.createArticle(thisPost, "YouTube");
 		}
 	}
-}
+};

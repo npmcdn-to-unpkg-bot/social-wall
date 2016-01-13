@@ -1,9 +1,9 @@
 <?php
-/*
-	social-wall V0.2.1
-	Made by Jordan Thiervoz
-	OKLM posey
-*/
+/**
+ * social-wall - 0.3
+ * Made by Jordan Thiervoz
+ * OKLM posey
+**/
 
 /*
 **************************
