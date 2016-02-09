@@ -1,6 +1,6 @@
 <?php
 /**
- * social-wall - 0.3
+ * social-wall - 0.3.2
  * Made by Jordan Thiervoz
  * OKLM posey
 **/
@@ -248,7 +248,7 @@ function youtube_launch(){
 	global $YT_app_id;
 
 	if(isset($_POST["id"])){
-		$feed = fetchUrl("https://www.googleapis.com/youtube/v3/activities?part=contentDetails%2C+snippet&channelId=" . $_POST['id'] . "&maxResults=25&key=" . $YT_app_id);
+		$feed = fetchUrl("https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=" . $_POST['id'] . "&maxResults=25&type=video&key=" . $YT_app_id);
 		echo $feed;
 	}
 	else

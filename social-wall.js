@@ -1,5 +1,5 @@
 /**
- * social-wall - 0.3.1
+ * social-wall - 0.3.2
  * Made by Jordan Thiervoz
  * OKLM posey
 **/
@@ -281,9 +281,8 @@ var social = {
 	},
 	showPosts:function(page, state){
 		function showThePostsInit(){
-			if($loaderElement.attr("id") == "social_loading"){{
+			if($loaderElement.attr("id") == "social_loading"){
 				$loaderElement.hide();
-			}
 			}
 
 			$loaderElement.removeClass("social_state_0 social_state_1 social_state_2 social_state_3 social_state_4 social_state_5 social_state_6");
@@ -347,13 +346,11 @@ var social = {
 
 		if(state == "loadInit"){
 			console.log("Chargement terminé");
-			if($loaderElement.attr("id") =="social_loading"){{
+			if($loaderElement.attr("id") =="social_loading"){
 				TweenLite.to($loaderElement, 0.5, { alpha: 0, delay : 1.5, onComplete : showThePostsInit});
 			}
-			}
-			else{{
+			else{
 				TweenLite.to($loaderElement, 0.5, { delay : 1.5, onComplete : showThePostsInit});
-			}
 			}
 		}
 		else if(state == "loadMore"){
@@ -389,9 +386,8 @@ var social = {
 				});
 			}
 
-			if(currentPage == maxPages){{
+			if(currentPage == maxPages){
 				$("#social_load_more").hide();
-			}
 			}
 		}
 	},
@@ -488,7 +484,7 @@ var social = {
 		divContent = $("<div></div>");
 		divContent.addClass("social_content");
 
-		if(!(typeof data[1] === "undefined") && data[1].length >= 375){
+		if(typeof data[1] !== "undefined" && data[1].length >= 375){
 			data[1] = data[1].substr(0, 375) + " ...";
 		}
 
@@ -950,7 +946,7 @@ var social = {
 		}
 	},
 	createCache:function(network, id, message, link, date, author, picture){
-		if(!(typeof message === "undefined")){
+		if(typeof message !== "undefined"){
 			message = message.replace(/\"/g,"\\\"");
 			message = message.replace(new RegExp("(\r\n|\r|\n)", "g"), "");
 		}
@@ -1007,13 +1003,14 @@ var social = {
 	},
 	finishCache:function(id_target, network){
 		var d = new Date();
+		var saveCache;
 		
 		if(network == "fb"){
 			fb_posts += " ], \"creationDate\": \"" + d.getFullYear() + "-" + (d.getMonth() + 1) + "-" + d.getDate() + "\", \"id_target\": \"" + id_target + "\"}";
 			localStorage.setItem("fb_elems", fb_posts);
 
 			if(localStorage.getItem("fb_elems").substr(0, 15) == "[object Object]"){
-				var saveCache = "{ \"posts\": [" + localStorage.getItem("fb_elems").substr(17);
+				saveCache = "{ \"posts\": [" + localStorage.getItem("fb_elems").substr(17);
 				
 				localStorage.setItem("fb_elems", saveCache);
 			}
@@ -1023,7 +1020,7 @@ var social = {
 			localStorage.setItem("tw_elems", tw_posts);
 
 			if(localStorage.getItem("tw_elems").substr(0, 15) == "[object Object]"){
-				var saveCache = "{ \"posts\": [" + localStorage.getItem("tw_elems").substr(17);
+				saveCache = "{ \"posts\": [" + localStorage.getItem("tw_elems").substr(17);
 				
 				localStorage.setItem("tw_elems", saveCache);
 			}
@@ -1033,7 +1030,7 @@ var social = {
 			localStorage.setItem("ins_elems", ins_posts);
 
 			if(localStorage.getItem("ins_elems").substr(0, 15) == "[object Object]"){
-				var saveCache = "{ \"posts\": [" + localStorage.getItem("ins_elems").substr(17);
+				saveCache = "{ \"posts\": [" + localStorage.getItem("ins_elems").substr(17);
 				
 				localStorage.setItem("ins_elems", saveCache);
 			}
@@ -1043,7 +1040,7 @@ var social = {
 			localStorage.setItem("yt_elems", yt_posts);
 
 			if(localStorage.getItem("yt_elems").substr(0, 15) == "[object Object]"){
-				var saveCache = "{ \"posts\": [" + localStorage.getItem("yt_elems").substr(17);
+				saveCache = "{ \"posts\": [" + localStorage.getItem("yt_elems").substr(17);
 				
 				localStorage.setItem("yt_elems", saveCache);
 			}
@@ -1278,36 +1275,26 @@ var social_yt = {
 				titleAndDescription = feedYt[i].snippet.title + " - " + feedYt[i].snippet.description;
 			}
 			
-			var linkVideo = "https://youtube.com/watch?v=" + feedYt[i].contentDetails.upload.videoId;
+			var linkVideo = "https://youtube.com/watch?v=" + feedYt[i].id.videoId;
 
 			var dateVideo = social.analyzeDate(feedYt[i].snippet.publishedAt, "yt");
 
 			var thumbnail;
 
-			thisPost.push(feedYt[i].contentDetails.upload.videoId);
+			thisPost.push(feedYt[i].id.videoId);
 			thisPost.push(titleAndDescription);
 			thisPost.push(linkVideo);
 			thisPost.push(dateVideo);
 			thisPost.push(feedYt[i].snippet.channelTitle);
 
-			if(feedYt[i].snippet.thumbnails.hasOwnProperty("default")){
+			if(feedYt[i].snippet.thumbnails.hasOwnProperty("high")){
+				thumbnail = feedYt[i].snippet.thumbnails.high.url;
+			}
+			else if(feedYt[i].snippet.thumbnails.hasOwnProperty("medium")){
+				thumbnail = feedYt[i].snippet.thumbnails.medium.url;
+			}
+			else if(feedYt[i].snippet.thumbnails.hasOwnProperty("default")){
 				thumbnail = feedYt[i].snippet.thumbnails.default.url;
-
-				if(feedYt[i].snippet.thumbnails.hasOwnProperty("medium")){
-					thumbnail = feedYt[i].snippet.thumbnails.medium.url;
-					
-					if(feedYt[i].snippet.thumbnails.hasOwnProperty("high")){
-						thumbnail = feedYt[i].snippet.thumbnails.high.url;
-						
-						if(feedYt[i].snippet.thumbnails.hasOwnProperty("standard")){
-							thumbnail = feedYt[i].snippet.thumbnails.standard.url;
-							
-							if(feedYt[i].snippet.thumbnails.hasOwnProperty("maxres")){
-								thumbnail = feedYt[i].snippet.thumbnails.maxres.url;
-							}
-						}
-					}
-				}
 			}
 
 			thisPost.push(thumbnail);
