@@ -1,7 +1,7 @@
 # social-wall
 A JavaScript / PHP Social Wall
 
-Version 0.3.2
+Version 0.3.3
 
 # What is social-wall
 social-wall is a JavaScript (and PHP) plugin which allows you to display the latest posts from differents social networks in a grid.
@@ -186,6 +186,9 @@ The browser ID key is your `App ID`.
 * Don't use a PHP file anymore.
 
 #Change log
+####0.3.3
+* Corrections
+
 ####0.3.2
 * Fixed a problem with the YouTube API.
 
