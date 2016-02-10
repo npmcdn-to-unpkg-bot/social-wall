@@ -514,12 +514,12 @@ var social = {
 		gElement.appendChild(pathElement2);
 		sourceImg.appendChild(gElement);
 
-		divSource.appendChild(pContent);
 		divSource.appendChild(sourceImg);
 		divSource.appendChild(sourceP);
 
 		article.append(divSource);
 
+		divContent.append(pContent);
 		divContent.append(imgContent);
 
 		aLink.append(divContent);
