@@ -1,5 +1,5 @@
 /**
- * social-wall - 0.3.2
+ * social-wall - 0.3.3
  * Made by Jordan Thiervoz
  * OKLM posey
 **/
@@ -397,7 +397,7 @@ var social = {
 		var divSource, sourceP;
 		var sourceImg, gElement, pathElement, pathElement2;
 		var aLink;
-		var divContent, imgContent;
+		var divContent, pContent, imgContent;
 		var divDate;
 
 
@@ -488,7 +488,9 @@ var social = {
 			data[1] = data[1].substr(0, 375) + " ...";
 		}
 
-		divContent.text(data[1]);
+		pContent = $("<p></p>");
+
+		pContent.text(data[1]);
 
 		imgContent = $("<img/>");
 
@@ -512,6 +514,7 @@ var social = {
 		gElement.appendChild(pathElement2);
 		sourceImg.appendChild(gElement);
 
+		divSource.appendChild(pContent);
 		divSource.appendChild(sourceImg);
 		divSource.appendChild(sourceP);
 
