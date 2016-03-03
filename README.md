@@ -180,10 +180,11 @@ Scroll down to the "Client side" part and follow the instructions to get your `A
 The browser ID key is your `App ID`.
 
 #Bugs and changes to make
-* CSS not implemented.
-* Remove the usage of TweenLite & jQuery.
+* CSS not yet implemented in the repo.
 * Add link to the account in the top title of every post.
+* Add a parameter to change the date format.
 * Don't use a PHP file anymore.
+* Refactor the code to improve performance.
 
 #Change log
 ####0.3.3
