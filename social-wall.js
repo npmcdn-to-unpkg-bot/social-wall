@@ -1,5 +1,5 @@
 /**
- * social-wall - 0.3.3
+ * social-wall - 0.3.4
  * Made by Jordan Thiervoz
  * OKLM posey
 **/
@@ -37,10 +37,10 @@ var phpURL = "/";
 var $loaderElement;
 
 // Element to be placed in localStorage for every network
-var fb_posts = "{ \"posts\": [";
-var tw_posts = "{ \"posts\": [";
-var ins_posts = "{ \"posts\": [";
-var yt_posts = "{ \"posts\": [";
+var fb_posts = '{ \"posts\": [';
+var tw_posts = '{ \"posts\": [';
+var ins_posts = '{ \"posts\": [';
+var yt_posts = '{ \"posts\": [';
 
 // Number of elements per network
 var nbPostsFb;
@@ -128,13 +128,17 @@ var social = {
 
 		// Initialize the width of every article depending on the #social_wall width
 		tailleContainer = $("#social_wall").width();
-
-		if(clientWidth < 850){
-			if(clientWidth > 600){
-				tailleContainer = Math.floor((tailleContainer / 3) - 35);
-			}
+		
+		if (clientWidth <= 540) {
+			tailleContainer = Math.floor(tailleContainer);
 		}
-		else{
+		else if (clientWidth <= 850) {
+			tailleContainer = Math.floor((tailleContainer / 2) - 25);
+		}
+		else if (clientWidth <= 1050) {
+			tailleContainer = Math.floor((tailleContainer / 3) - 35);
+		}
+		else {
 			tailleContainer = Math.floor((tailleContainer / 4) - 35);
 		}
 
