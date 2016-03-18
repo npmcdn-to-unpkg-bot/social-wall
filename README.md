@@ -6,7 +6,7 @@ A JavaScript / PHP Social Wall
 social-wall is a JavaScript (and PHP) plugin which allows you to display the latest posts from differents social networks in a grid.
 social-wall uses JavaScript and PHP to retrieve and analyze the different posts.
 
-*Current version : __0.3.4__*
+*Current version : __0.4__*
 
 
 ## Social networks supported
@@ -134,6 +134,10 @@ All you need for YouTube is one thing : your `App ID`. Place it here `$YT_app_id
 * Refactor the code to improve performance.
 
 #Change log
+
+##0.4
+* Responsive corrections.
+* Added .CSS and .LESS files.
 
 ####0.3.4
 * Responsive corrections.
