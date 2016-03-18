@@ -1,5 +1,5 @@
 /**
- * social-wall - 0.3.4
+ * social-wall - 0.4
  * Made by Jordan Thiervoz
  * OKLM posey
 **/
@@ -59,6 +59,7 @@ var fb, tw, ins, yt, vm;
 
 // Device width
 var clientWidth = $(window).width();
+var clientHeight = $(window).height();
 
 /* END VARIABLE INITIALIZATION */
 
@@ -129,11 +130,16 @@ var social = {
 		// Initialize the width of every article depending on the #social_wall width
 		tailleContainer = $("#social_wall").width();
 		
-		if (clientWidth <= 540) {
+		if (clientWidth <= 570) {
 			tailleContainer = Math.floor(tailleContainer);
 		}
 		else if (clientWidth <= 850) {
-			tailleContainer = Math.floor((tailleContainer / 2) - 25);
+			if (clientHeight <= 500){ // Paysage
+				tailleContainer = Math.floor((tailleContainer / 2) -50);
+			}
+			else { // Portrait
+				tailleContainer = Math.floor((tailleContainer / 2) - 25);
+			}
 		}
 		else if (clientWidth <= 1050) {
 			tailleContainer = Math.floor((tailleContainer / 3) - 35);
@@ -1099,11 +1105,16 @@ var social_fb = {
 
 		for(var i in posts){
 			var postDate = posts[i].created_time.substr(0, 10);
+			var postLink = posts[i].link;
+
+			if (postLink == null || postLink == "") {
+				postLink = "https://facebook.com/" + posts[i].id;
+			}
 
 			var thisPost = [];
 			thisPost.push(posts[i].id);
 			thisPost.push(posts[i].message);
-			thisPost.push(posts[i].link);
+			thisPost.push(postLink);
 			thisPost.push(postDate);
 			thisPost.push(posts[i].from.name);
 			thisPost.push(posts[i].full_picture);
