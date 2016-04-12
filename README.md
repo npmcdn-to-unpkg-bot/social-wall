@@ -20,7 +20,7 @@ social-wall uses JavaScript and PHP to retrieve and analyze the different posts.
 ##Required
 social-wall requires these librairies to work:
 * **jQuery**
-* **TweenLite**, to animate elements
+* **TweenLite**, to animate elements (deleted soon)
 * **masonry**, to build a grid layout easily
 * **Imagesloaded**, combined with masonry. It detects when images are loaded, then it launch the masonry grid.
 
@@ -54,6 +54,8 @@ social.init({
 });
 ```
 
+Do not remove one of the networks parameters, they are all required for now.
+
 #Configuration
 You can configure social-wall by adding the `params` array.
 
@@ -70,16 +72,16 @@ social.init({
 	},
 	params : {
 		elemPerPage : 6,
-		maxPages : 2,
-		cacheDuration : 2,
-		loaderElement : $("#myElement"),
-		phpURL : "http://localhost/myFolder/anotherFolder/"
+		maxPages : 2, // Here, 12 elements will be shown in total
+		cacheDuration : 2, // In days
+		loaderElement : $("#myElement"), // For a loader animation
+		phpURL : "http://localhost/myFolder/anotherFolder/" // URL of the social-wall PHP file
 	}
 });
 ```
 
 #APIs configuration
-_If you have trouble creating any application, take a look at the **[Annex](#annex)** part below._
+_If you have trouble creating any application, take a look at the **[Annex](https://github.com/thiervoj/social-wall/blob/master/ANNEX.md)** part below._
 
 ##Facebook
 To configure your connection to Facebook all you need is two information :
@@ -127,42 +129,9 @@ $INS_token = "";
 All you need for YouTube is one thing : your `App ID`. Place it here `$YT_app_id`.
 
 #Bugs and changes to make
-* CSS not yet implemented in the repo.
 * Add link to the account in the top title of every post.
 * Add a parameter to change the date format.
-* Don't use a PHP file anymore.
+* Don't use a PHP file anymore, or manage it better.
 * Refactor the code to improve performance.
-
-#Change log
-
-##0.4
-* Responsive corrections.
-* Added .CSS and .LESS files.
-
-####0.3.4
-* Responsive corrections.
-
-####0.3.2
-* Fixed a problem with the YouTube API.
-
-####0.3.1
-* Responsive layout.
-* Bug fix for broken images.
-
-##0.3
-* PHP URL can be modified with a new parameter : `phpURL`.
-* Posts are now correctly created when the cache is old.
-* Corrections.
-
-##0.2
-* Everything is now working correctly online (especially Facebook !).
-* All posts retrieved are now placed in cache (local storage). The cache duration is fixed to 2 days minimum (for now).
-* Some other corrections.
-
-####0.1.1
-* If no "loader element" is entered, hide correctly the loading label.
-* No images for source part on elements, only svgs.
-* Post content length limit is fixed to 450 characters.
-
-##0.1
-* It works only offline.
+* Re organise the repo.
+* When the PHP file is not found, the 404 error is not managed and may stop all the JavaScript compilation.
