@@ -6,7 +6,8 @@ A JavaScript / PHP Social Wall
 social-wall is a JavaScript (and PHP) plugin which allows you to display the latest posts from differents social networks in a grid.
 social-wall uses JavaScript and PHP to retrieve and analyze the different posts.
 
-*Current version : __0.4__*
+*Current version : __0.4.2__*
+**[CHANGELOG](https://github.com/thiervoj/social-wall/blob/master/CHANGELOG.md)**
 
 
 ## Social networks supported
@@ -27,10 +28,9 @@ social-wall requires these librairies to work:
 Add these librairies to your HTML page **before** adding _social-wall.js_ :
 
 ``` HTML
-<script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/1.18.2/TweenMax.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.0.0/imagesloaded.pkgd.min.js"></script>
-<script src="http://cdnjs.cloudflare.com/ajax/libs/masonry/3.3.2/masonry.pkgd.min.js"></script>
+<script src="http://code.jquery.com/jquery-1.12.3.min.js"></script>
+<script src="http://imagesloaded.desandro.com/imagesloaded.pkgd.min.js"></script>
+<script src="https://npmcdn.com/masonry-layout@4.0.0/dist/masonry.pkgd.min.js"></script>
 <script src="/js/social-wall.js"></script>
 ```
 
@@ -81,7 +81,7 @@ social.init({
 ```
 
 #APIs configuration
-_If you have trouble creating any application, take a look at the **[Annex](https://github.com/thiervoj/social-wall/blob/master/ANNEX.md)** part below._
+_If you have trouble creating any application, take a look at the **[Annex](https://github.com/thiervoj/social-wall/blob/master/ANNEX.md)**._
 
 ##Facebook
 To configure your connection to Facebook all you need is two information :
@@ -131,7 +131,7 @@ All you need for YouTube is one thing : your `App ID`. Place it here `$YT_app_id
 #Bugs and changes to make
 * Add link to the account in the top title of every post.
 * Add a parameter to change the date format.
-* Don't use a PHP file anymore, or manage it better.
+* Don't use a PHP file anymore, or try to manage it better.
 * Refactor the code to improve performance.
-* Re organise the repo.
-* When the PHP file is not found, the 404 error is not managed and may stop all the JavaScript compilation.
+* Re organise the git repo.
+* When the PHP file is not found, the 404 error is not managed every time, this error can stop all the JavaScript in your site...

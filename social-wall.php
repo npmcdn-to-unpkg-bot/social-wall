@@ -1,6 +1,6 @@
 <?php
 /**
- * social-wall - 0.4
+ * social-wall - 0.4.2
  * Made by Jordan Thiervoz
  * OKLM posey
 **/
@@ -12,7 +12,7 @@
 */
 $FB_app_id = "";
 $FB_app_secret = "";
-$FB_token = "";
+$FB_token = ""; // LET IT EMPTY !
 
 $TW_app_id = "";
 $TW_app_secret = "";
@@ -58,7 +58,7 @@ function social_wall_launch(){
 		}
 	}
 	else
-		echo "{\"error\":{\"message\":\"Missing network parameter.\"}}";
+		echo "{\"error\":{\"message\":\"Missing 'network' parameter.\"}}";
 }
 
 // Fetch l'url en GET et retourne la chaîne récupérée
@@ -68,7 +68,7 @@ function fetchUrl($url){
 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
 	curl_setopt($ch, CURLOPT_TIMEOUT, 20);
 	// You may need to add the line below
-	// curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
+	curl_setopt($ch,CURLOPT_SSL_VERIFYPEER,false);
 
 	$feedData = curl_exec($ch);
 	curl_close($ch); 
@@ -85,24 +85,30 @@ function facebook_launch(){
 
 		if(isset($_POST["a_t"])){
 			if($_POST["a_t"] == "null")
-				facebook_getToken();
-			else
+				$tokenIsOk = facebook_getToken();
+			else {
+				$tokenIsOk = true;
 				$FB_token = $_POST["a_t"];
+			}
 
-			$theFeed = facebook_getFeed($page_id);
+			if ($tokenIsOk == true) {
+				$theFeed = facebook_getFeed($page_id);
 
-			if($theFeed == null){
-				facebook_getToken();
-				echo facebook_getFeed($page_id);
+				if($theFeed == null){
+					$tokenBis = facebook_getToken();
+					echo facebook_getFeed($page_id);
+				}
+				else
+					echo $theFeed;
 			}
 			else
-				echo $theFeed;
+				echo "{\"error\":{\"message\":\"Missing FB API information.\"}}";
 		}
 		else
 			echo "{\"error\":{\"message\":\"Missing Facebook token.\"}}";
 	}
 	else{
-		echo "{\"error\":{\"message\":\"Missing page ID parameter.\"}}";
+		echo "{\"error\":{\"message\":\"Missing 'id' parameter (your FB id).\"}}";
 		exit();
 	}
 }
@@ -111,16 +117,26 @@ function facebook_launch(){
 function facebook_getToken(){
 	global $FB_token, $FB_app_id, $FB_app_secret;
 
-	$FB_token = fetchUrl("https://graph.facebook.com/oauth/access_token?client_id=" . $FB_app_id . "&client_secret=" . $FB_app_secret . "&grant_type=client_credentials");
+	$url = "https://graph.facebook.com/oauth/access_token?client_id=" . $FB_app_id . "&client_secret=" . $FB_app_secret . "&grant_type=client_credentials";
 
-	$FB_token = substr($FB_token, 13);
+	$FB_token = fetchUrl($url);
+	$json_decoded = json_decode($FB_token);
+	
+	if($json_decoded === null) {
+		$FB_token = substr($FB_token, 13);
+
+		return true;
+	}
+
+	return false;
 }
 
 // Récupère les derniers posts de la page fb
 function facebook_getFeed($pageID){
 	global $FB_token;
+	$url = "https://graph.facebook.com/" . $pageID . "/posts?fields=id,message,link,created_time,from,full_picture&access_token=" . $FB_token;
 
-	$json_object = fetchUrl("https://graph.facebook.com/" . $pageID . "/posts?fields=id,message,link,created_time,from,full_picture&access_token=" . $FB_token);
+	$json_object = fetchUrl($url);
 	
 	$json_decoded = json_decode($json_object);
 	

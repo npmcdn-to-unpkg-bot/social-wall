@@ -1,5 +1,5 @@
 /**
- * social-wall - 0.4
+ * social-wall - 0.4.2
  * Made by Jordan Thiervoz
  * OKLM posey
 **/
@@ -31,7 +31,7 @@ var elemPerPage = 8;
 var maxPages = 3;
 
 // PHP URL
-var phpURL = "/";
+var phpURL = "";
 
 // jQuery element where the loader animation will be done
 var $loaderElement;
@@ -324,8 +324,7 @@ var social = {
 
 				setTimeout(function(){
 					$(".social_post.social_page_1").each(function(i){
-						TweenLite.to($(this), 0, { scale : 0.8 });
-						TweenLite.to($(this), 0.2, { alpha : 1, scale : 1, delay : i * 0.2 });
+						$(this).delay(i * 200).animate({'opacity': 1}, 200);
 					});
 				}, 2000);
 
@@ -357,10 +356,16 @@ var social = {
 		if(state == "loadInit"){
 			console.log("Chargement terminé");
 			if($loaderElement.attr("id") =="social_loading"){
-				TweenLite.to($loaderElement, 0.5, { alpha: 0, delay : 1.5, onComplete : showThePostsInit});
+				$loaderElement.delay(1500).animate({
+					'opacity': 0},
+					500, function() {
+					showThePostsInit();
+				});
 			}
 			else{
-				TweenLite.to($loaderElement, 0.5, { delay : 1.5, onComplete : showThePostsInit});
+				setTimeout(function(){
+					showThePostsInit();
+				}, 1500);
 			}
 		}
 		else if(state == "loadMore"){
@@ -380,8 +385,7 @@ var social = {
 							});
 						});
 
-						TweenLite.to($(this), 0, { scale : 0.8 });
-						TweenLite.to($(this), 0.2, { alpha : 1, scale : 1, delay : i * 0.2 });
+						$(this).delay(i * 200).animate({'opacity': 1}, 200);
 					}
 				});
 
