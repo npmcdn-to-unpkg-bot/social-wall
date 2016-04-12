@@ -7,6 +7,7 @@ social-wall is a JavaScript (and PHP) plugin which allows you to display the lat
 social-wall uses JavaScript and PHP to retrieve and analyze the different posts.
 
 *Current version : __0.4.2__*
+
 **[CHANGELOG](https://github.com/thiervoj/social-wall/blob/master/CHANGELOG.md)**
 
 
@@ -21,7 +22,6 @@ social-wall uses JavaScript and PHP to retrieve and analyze the different posts.
 ##Required
 social-wall requires these librairies to work:
 * **jQuery**
-* **TweenLite**, to animate elements (deleted soon)
 * **masonry**, to build a grid layout easily
 * **Imagesloaded**, combined with masonry. It detects when images are loaded, then it launch the masonry grid.
 
