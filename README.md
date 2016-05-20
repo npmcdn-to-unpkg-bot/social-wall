@@ -6,7 +6,7 @@ A JavaScript / PHP Social Wall
 social-wall is a JavaScript (and PHP) plugin which allows you to display the latest posts from differents social networks in a grid.
 social-wall uses JavaScript and PHP to retrieve and analyze the different posts.
 
-*Current version : __0.4.2__*
+*Current version : __0.4.3__*
 
 **[CHANGELOG](https://github.com/thiervoj/social-wall/blob/master/CHANGELOG.md)**
 
@@ -54,7 +54,7 @@ social.init({
 });
 ```
 
-Do not remove one of the networks parameters, they are all required for now.
+**Do not remove one of the networks parameters, they are all required for now.**
 
 #Configuration
 You can configure social-wall by adding the `params` array.
@@ -80,6 +80,8 @@ social.init({
 });
 ```
 
+By default, the plugin will search the social-wall.php file in its own folder. Change the `phpURL` parameter if you moved the php file.
+
 #APIs configuration
 _If you have trouble creating any application, take a look at the **[Annex](https://github.com/thiervoj/social-wall/blob/master/ANNEX.md)**._
 
@@ -93,7 +95,6 @@ Open the "social-wall.php" file and add your `App ID` and `App Secret` into thes
 $FB_app_id = "";
 $FB_app_secret = "";
 ```
-You don't have to initialize `$FB_token`, social-wall plugin will retrieve automatically the Facebook access token to connect to your application. So let it empty !
 
 ##Twitter
 Twitter needs 4 information to work :
@@ -129,9 +130,7 @@ $INS_token = "";
 All you need for YouTube is one thing : your `App ID`. Place it here `$YT_app_id`.
 
 #Bugs and changes to make
+* Don't use a PHP file anymore, or try to manage it better.
 * Add link to the account in the top title of every post.
 * Add a parameter to change the date format.
-* Don't use a PHP file anymore, or try to manage it better.
 * Refactor the code to improve performance.
-* Re organise the git repo.
-* When the PHP file is not found, the 404 error is not managed every time, this error can stop all the JavaScript in your site...

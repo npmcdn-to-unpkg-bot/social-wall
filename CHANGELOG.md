@@ -1,5 +1,10 @@
 #Changelog
 
+####0.4.3
+* No more Facebook token stocked in the client-side.
+* Re organised the repo.
+* Added Gruntfile.js and package.json
+
 ####0.4.2
 * Re organised the repo.
 * One depedency has been removed (TweenLite).
