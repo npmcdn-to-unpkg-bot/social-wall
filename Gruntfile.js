@@ -70,9 +70,6 @@ module.exports = function(grunt) {
 					compress: {
 						drop_console: true
 					},
-					mangle: {
-						except: 'social'
-					}
 				},
 				files: {
 					'dist/social-wall.min.js': 'dist/social-wall.js'
@@ -81,9 +78,6 @@ module.exports = function(grunt) {
 			productionUnminified: {
 				options: {
 					compress: false,
-					mangle: {
-						except: 'social'
-					}
 				},
 				files: {
 					'dist/social-wall.js': 'dist/social-wall.js'
