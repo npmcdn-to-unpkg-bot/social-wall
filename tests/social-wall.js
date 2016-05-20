@@ -4,15 +4,6 @@
  * OKLM posey
 **/
 
-var $ = require('jquery');
-var jQueryBridget = require('jquery-bridget');
-
-var imagesLoaded = require('imagesloaded');
-imagesLoaded.makeJQueryPlugin($);
-
-var masonry = require('masonry-layout');
-// make Masonry a jQuery plugin
-jQueryBridget( 'masonry', masonry, $ );
 
 /* START VARIABLE INITIALIZATION */
 // Social wall width

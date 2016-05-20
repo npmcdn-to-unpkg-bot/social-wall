@@ -10,32 +10,23 @@ module.exports = function(grunt) {
 			},
 			jsDev: {
 				files: 'tests/*.js',
-				tasks: ['browserify:development', 'jshint']
+				tasks: ['browserify', 'jshint']
 			}
 		},
 		browserify: {
-			development: {
-				files: {
-					'tests/main.js': ['tests/social-wall.js', 'tests/app.js']
-				}
-			},
-			production: {
-				files: {
-					'dist/social-wall.js': 'tests/social-wall.js'
-				}
-			}
+			'tests/main.js': ['tests/<%= pkg.name %>.js', 'tests/app.js']
 		},
 		less: {
 			development: {
 				options: {
 					paths: ['tests/css/assets'],
+					compress: false,
 					plugins: [
-						new (require('less-plugin-autoprefix'))({browsers: ['> 5%']}),
-						new (require('less-plugin-clean-css'))()
+						new (require('less-plugin-autoprefix'))({browsers: ['> 5%']})
 					]
 				},
 				files: {
-					'tests/css/social-wall.css': 'tests/css/social-wall.less'
+					'tests/css/<%= pkg.name %>.css': 'tests/css/<%= pkg.name %>.less'
 				}
 			},
 			production: {
@@ -48,40 +39,19 @@ module.exports = function(grunt) {
 					]
 				},
 				files: {
-					'dist/social-wall.min.css': 'tests/css/social-wall.less'
-				}
-			},
-			productionUnminified: {
-				options: {
-					paths: ['tests/css/assets'],
-					plugins: [
-						new (require('less-plugin-autoprefix'))({browsers: ['> 5%']}),
-						new (require('less-plugin-clean-css'))()
-					]
-				},
-				files: {
-					'dist/social-wall.css': 'tests/css/social-wall.less'
+					'dist/<%= pkg.name %>.min.css': 'tests/css/<%= pkg.name %>.less'
 				}
 			}
 		},
 		uglify: {
-			production: {
-				options: {
-					compress: {
-						drop_console: true
-					},
-				},
-				files: {
-					'dist/social-wall.min.js': 'dist/social-wall.js'
+			options: {
+				banner: '/*!\n * jQuery <%= pkg.name %> plugin <%= pkg.version %>\n * https://github.com/thiervoj/social-wall\n *\n * Original jquery-browser code Copyright 2005, 2015 jQuery Foundation, Inc. and other contributors\n * http://jquery.org/license\n *\n * Modifications Copyright <%= grunt.template.today("yyyy") %> Jordan Thiervoz\n * https://github.com/thiervoj\n *\n * Released under the <%= pkg.license %> license\n *\n * Date: <%= grunt.template.today("dd-mm-yyyy")%>\n */',
+				compress: {
+					drop_console: true
 				}
 			},
-			productionUnminified: {
-				options: {
-					compress: false,
-				},
-				files: {
-					'dist/social-wall.js': 'dist/social-wall.js'
-				}
+			files: {
+				'dist/social-wall.min.js': 'tests/social-wall.js'
 			}
 		},
 		jshint: {
@@ -100,7 +70,29 @@ module.exports = function(grunt) {
 					imagesloaded: true
 				}
 			},
-			all: ['tests/app.js', 'tests/social-wall.js']
+			all: ['tests/app.js', 'tests/<%= pkg.name %>.js']
+		},
+		copy: {
+			main: {
+				files: [
+					{
+						src: 'test/<%= pkg.name %>.js',
+						dest: 'dist/<%= pkg.name %>.js'
+					},
+					{
+						src: 'test/css/<%= pkg.name %>.css',
+						dest: 'dist/<%= pkg.name %>.css'
+					},
+					{
+						src: 'test/<%= pkg.name %>.php',
+						dest: 'dist/<%= pkg.name %>.php'
+					},
+					{
+						src: 'test/<%= pkg.name %>.less',
+						dest: 'dist/<%= pkg.name %>.less'
+					}
+				]
+			}
 		}
 	});
 
@@ -108,8 +100,9 @@ module.exports = function(grunt) {
 	grunt.loadNpmTasks('grunt-contrib-less');
 	grunt.loadNpmTasks('grunt-contrib-uglify');
 	grunt.loadNpmTasks('grunt-contrib-jshint');
+	grunt.loadNpmTasks('grunt-contrib-copy');
 	grunt.loadNpmTasks('grunt-browserify');
 
-	grunt.registerTask('production', ['browserify:production', 'uglify:production', 'uglify:productionUnminified', 'less:production',  'less:productionUnminified']);
+	grunt.registerTask('production', ['uglify', 'less:production', 'copy']);
 	grunt.registerTask('default', ['watch']);
 };
