@@ -20,7 +20,6 @@ module.exports = function(grunt) {
 			development: {
 				options: {
 					paths: ['tests/css/assets'],
-					compress: false,
 					plugins: [
 						new (require('less-plugin-autoprefix'))({browsers: ['> 5%']})
 					]
@@ -44,14 +43,16 @@ module.exports = function(grunt) {
 			}
 		},
 		uglify: {
-			options: {
-				banner: '/*!\n * jQuery <%= pkg.name %> plugin <%= pkg.version %>\n * https://github.com/thiervoj/social-wall\n *\n * Original jquery-browser code Copyright 2005, 2015 jQuery Foundation, Inc. and other contributors\n * http://jquery.org/license\n *\n * Modifications Copyright <%= grunt.template.today("yyyy") %> Jordan Thiervoz\n * https://github.com/thiervoj\n *\n * Released under the <%= pkg.license %> license\n *\n * Date: <%= grunt.template.today("dd-mm-yyyy")%>\n */',
-				compress: {
-					drop_console: true
+			main: {
+				options: {
+					banner: '/*!\n * jQuery <%= pkg.name %> plugin <%= pkg.version %>\n * https://github.com/thiervoj/social-wall\n *\n * Original jquery-browser code Copyright 2005, 2015 jQuery Foundation, Inc. and other contributors\n * http://jquery.org/license\n *\n * Modifications Copyright <%= grunt.template.today("yyyy") %> Jordan Thiervoz\n * https://github.com/thiervoj\n *\n * Released under the <%= pkg.license %> license\n *\n * Date: <%= grunt.template.today("dd-mm-yyyy")%>\n */',
+					compress: {
+						drop_console: true
+					}
+				},
+				files: {
+					'dist/social-wall.min.js': 'tests/social-wall.js'
 				}
-			},
-			files: {
-				'dist/social-wall.min.js': 'tests/social-wall.js'
 			}
 		},
 		jshint: {
@@ -76,19 +77,19 @@ module.exports = function(grunt) {
 			main: {
 				files: [
 					{
-						src: 'test/<%= pkg.name %>.js',
+						src: 'tests/<%= pkg.name %>.js',
 						dest: 'dist/<%= pkg.name %>.js'
 					},
 					{
-						src: 'test/css/<%= pkg.name %>.css',
+						src: 'tests/css/<%= pkg.name %>.css',
 						dest: 'dist/<%= pkg.name %>.css'
 					},
 					{
-						src: 'test/<%= pkg.name %>.php',
+						src: 'tests/<%= pkg.name %>.php',
 						dest: 'dist/<%= pkg.name %>.php'
 					},
 					{
-						src: 'test/<%= pkg.name %>.less',
+						src: 'tests/css/<%= pkg.name %>.less',
 						dest: 'dist/<%= pkg.name %>.less'
 					}
 				]
