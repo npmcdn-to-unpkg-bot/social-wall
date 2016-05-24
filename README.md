@@ -126,7 +126,7 @@ $INS_app_redirect = "";
 $INS_token = "";
 ```
 
-#YouTube
+##YouTube
 All you need for YouTube is one thing : your `App ID`. Place it here `$YT_app_id`.
 
 #Bugs and changes to make
