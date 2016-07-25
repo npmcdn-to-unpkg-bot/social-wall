@@ -130,7 +130,7 @@ $INS_token = "";
 All you need for YouTube is one thing : your `App ID`. Place it here `$YT_app_id`.
 
 #Bugs and changes to make
-* Don't use a PHP file anymore, or try to manage it better.
-* Add link to the account in the top title of every post.
-* Add a parameter to change the date format.
-* Refactor the code to improve performance.
+- [ ] Don't use a PHP file anymore, or try to manage it better.
+- [ ] Add link to the account in the top title of every post.
+- [ ] Add a parameter to change the date format.
+- [ ] Refactor the code to improve performance.
