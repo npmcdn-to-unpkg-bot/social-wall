@@ -30,7 +30,7 @@ Add these librairies to your HTML page **before** adding _social-wall.js_ :
 ``` HTML
 <script src="http://code.jquery.com/jquery-1.12.3.min.js"></script>
 <script src="http://imagesloaded.desandro.com/imagesloaded.pkgd.min.js"></script>
-<script src="https://npmcdn.com/masonry-layout@4.0.0/dist/masonry.pkgd.min.js"></script>
+<script src="https://unpkg.com/masonry-layout@4.0.0/dist/masonry.pkgd.min.js"></script>
 <script src="/js/social-wall.js"></script>
 ```
 
